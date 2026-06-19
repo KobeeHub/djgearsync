@@ -1,92 +1,146 @@
 "use client";
+
 import { useState } from "react";
 
-const DATA: any = {
-  global: {
-    overall: [
-      {rank:1,name:"BeatSurgeon",country:"🇺🇸",tier:"👑",pts:284000,delta:0},
-      {rank:2,name:"Selector_Ren",country:"🇰🇷",tier:"🏆",pts:241200,delta:1},
-      {rank:3,name:"NightDriver",country:"🇫🇷",tier:"🏆",pts:238900,delta:-1},
-      {rank:4,name:"VinylVault_JP",country:"🇯🇵",tier:"🏆",pts:124400,delta:2,you:true},
-      {rank:5,name:"DJ_Nexus",country:"🇩🇪",tier:"🎛",pts:98300,delta:0},
-    ],
-    monthly: [
-      {rank:1,name:"NightDriver",country:"🇫🇷",tier:"🏆",pts:18900,delta:5},
-      {rank:2,name:"VinylVault_JP",country:"🇯🇵",tier:"🏆",pts:16400,delta:8,you:true},
-      {rank:3,name:"BeatSurgeon",country:"🇺🇸",tier:"👑",pts:15200,delta:-1},
-      {rank:4,name:"Selector_Ren",country:"🇰🇷",tier:"🏆",pts:11100,delta:-3},
-      {rank:5,name:"DJ_Nexus",country:"🇩🇪",tier:"🎛",pts:9400,delta:1},
-    ],
-  },
-  jp: {
-    overall: [
-      {rank:1,name:"VinylVault_JP",country:"🇯🇵",tier:"🏆",pts:124400,delta:0,you:true},
-      {rank:2,name:"KyotoGroove",country:"🇯🇵",tier:"🎛",pts:88200,delta:1},
-      {rank:3,name:"OsakaBassHead",country:"🇯🇵",tier:"🎛",pts:76500,delta:-1},
-      {rank:4,name:"TechnoRyo",country:"🇯🇵",tier:"🔊",pts:45100,delta:0},
-      {rank:5,name:"MidnightSetter",country:"🇯🇵",tier:"🔊",pts:38900,delta:2},
-    ],
-    monthly: [
-      {rank:1,name:"KyotoGroove",country:"🇯🇵",tier:"🎛",pts:9800,delta:3},
-      {rank:2,name:"VinylVault_JP",country:"🇯🇵",tier:"🏆",pts:16400,delta:1,you:true},
-      {rank:3,name:"MidnightSetter",country:"🇯🇵",tier:"🔊",pts:7100,delta:4},
-      {rank:4,name:"OsakaBassHead",country:"🇯🇵",tier:"🎛",pts:6200,delta:-2},
-      {rank:5,name:"TechnoRyo",country:"🇯🇵",tier:"🔊",pts:5400,delta:0},
-    ],
-  },
-};
+export default function ScanPage() {
+  const [scanned, setScanned] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [confidence, setConfidence] = useState<number | null>(null);
 
-export default function RankingPage() {
-  const [scope, setScope] = useState("global");
-  const [period, setPeriod] = useState("overall");
-  const entries = DATA[scope][period];
-  const me = entries.find((e: any) => e.you);
+  const handleScan = () => {
+    setScanned(true);
+    setResult("Pioneer CDJ-3000");
+    setConfidence(92);
+  };
+
+  const reset = () => {
+    setScanned(false);
+    setResult(null);
+    setConfidence(null);
+  };
 
   return (
-    <div style={{minHeight:"100vh",background:"#07090f",color:"#b8d4e8",fontFamily:"sans-serif",padding:"18px"}}>
-      <div style={{fontSize:9,letterSpacing:2,color:"#4a6a85",fontWeight:700}}>DJ GEAR SYNC</div>
-      <div style={{fontSize:18,fontWeight:900,color:"#fff",margin:"4px 0 16px"}}>ランキング</div>
-      <div style={{display:"flex",background:"#131c2e",border:"1px solid #1a2840",borderRadius:12,padding:3,marginBottom:10}}>
-        {[{k:"global",l:"🌍 グローバル"},{k:"jp",l:"🇯🇵 自国"}].map(o=>(
-          <button key={o.k} onClick={()=>setScope(o.k)} style={{flex:1,padding:"10px",borderRadius:9,fontSize:11,fontWeight:800,border:"none",cursor:"pointer",background:scope===o.k?"#00c8f0":"transparent",color:scope===o.k?"#07090f":"#4a6a85"}}>
-            {o.l}
-          </button>
-        ))}
-      </div>
-      <div style={{display:"flex",gap:7,marginBottom:16}}>
-        {[{k:"monthly",l:"📅 月間"},{k:"overall",l:"🏆 総合"}].map(o=>(
-          <button key={o.k} onClick={()=>setPeriod(o.k)} style={{flex:1,padding:"9px",borderRadius:20,fontSize:10,fontWeight:700,border:`1px solid ${period===o.k?"#f5c842":"#1a2840"}`,background:period===o.k?"rgba(245,200,66,0.12)":"transparent",color:period===o.k?"#f5c842":"#4a6a85",cursor:"pointer"}}>
-            {o.l}
-          </button>
-        ))}
-      </div>
-      {me&&<div style={{background:"rgba(0,200,240,0.12)",border:"1px solid rgba(0,200,240,0.4)",borderRadius:14,padding:16,marginBottom:16,display:"flex",alignItems:"center",gap:12}}>
-        <div style={{fontSize:24,fontWeight:900,color:"#00c8f0"}}>#{me.rank}</div>
-        <div><div style={{fontSize:9,color:"#4a6a85"}}>あなたの順位</div><div style={{fontSize:11,color:"#00c8f0",fontWeight:700}}>{me.pts.toLocaleString()} pt</div></div>
-      </div>}
-      <div style={{fontSize:9,letterSpacing:2,color:"#4a6a85",fontWeight:700,marginBottom:10}}>
-        {scope==="global"?"🌍 全世界":"🇯🇵 日本"} · {period==="monthly"?"2026年6月 — 毎月1日リセット":"総合ランキング"}
-      </div>
-      {entries.map((e: any)=>(
-        <div key={e.rank} style={{display:"flex",alignItems:"center",gap:10,padding:"11px 14px",marginBottom:6,borderRadius:10,background:e.you?"rgba(0,200,240,0.12)":"#131c2e",border:`1px solid ${e.you?"rgba(0,200,240,0.4)":"#1a2840"}`}}>
-          <div style={{width:32,height:32,borderRadius:9,display:"flex",alignItems:"center",justifyContent:"center",fontSize:e.rank<=3?16:13,fontWeight:900,color:e.rank===1?"#f5c842":e.rank===2?"#c8d4e0":e.rank===3?"#e0935a":"#4a6a85",flexShrink:0}}>
-            {e.rank<=3?["🥇","🥈","🥉"][e.rank-1]:e.rank}
-          </div>
-          <div style={{fontSize:14,flexShrink:0}}>{e.tier}</div>
-          <div style={{flex:1,minWidth:0}}>
-            <div style={{fontSize:11,fontWeight:e.you?900:700,color:e.you?"#00c8f0":"#fff"}}>
-              {e.name} {e.country}{e.you&&<span style={{fontSize:8,marginLeft:6,color:"#00c8f0"}}>YOU</span>}
-            </div>
-            <div style={{fontSize:9,color:"#4a6a85"}}>{e.pts.toLocaleString()} pt</div>
-          </div>
-          <span style={{fontSize:9,fontWeight:700,color:e.delta>0?"#00e89a":e.delta<0?"#ff4060":"#2e4258"}}>
-            {e.delta>0?`▲${e.delta}`:e.delta<0?`▼${Math.abs(e.delta)}`:"‒"}
-          </span>
+    <div style={{ minHeight: "100vh", backgroundColor: "#07090f", display: "flex", flexDirection: "column" }}>
+      
+      {/* ヘッダー */}
+      <div style={{ textAlign: "center", padding: "16px 0 8px" }}>
+        <div style={{ color: "#00c8f0", fontSize: 20, fontWeight: 800, letterSpacing: 2 }}>
+          DJ GEAR SYNC
         </div>
-      ))}
-      <div style={{marginTop:16,padding:"12px 14px",borderRadius:10,background:"#131c2e",border:"1px solid #1a2840",fontSize:9,color:"#4a6a85",lineHeight:1.7}}>
-        💡 ランキングはエラー報告・解決策投稿・いいね数などの活動ポイントに基づきます。月間ランキングは毎月1日にリセットされます。
+        <div style={{ color: "#4a6a85", fontSize: 13, marginTop: 4 }}>
+          📷 AIギアスキャン
+        </div>
       </div>
+
+      {/* ① ガイドバナー */}
+      <div style={{
+        margin: "0 16px 8px",
+        backgroundColor: "#0d1a10",
+        borderLeft: "3px solid #00e89a",
+        borderRadius: 8,
+        padding: "10px 14px",
+      }}>
+        <span style={{ color: "#00e89a", fontSize: 12 }}>
+          💡 1機材ずつ映すと認識精度が上がります
+        </span>
+      </div>
+
+      {/* カメラエリア（Web版はダミー枠） */}
+      <div style={{
+        flex: 1,
+        margin: "0 16px",
+        borderRadius: 16,
+        overflow: "hidden",
+        backgroundColor: "#0d1117",
+        position: "relative",
+        minHeight: 280,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}>
+        {/* スキャン枠 */}
+        <div style={{ position: "relative", width: 240, height: 240 }}>
+          {/* 四隅 */}
+          {[
+            { top: 0, left: 0, borderRight: "none", borderBottom: "none" },
+            { top: 0, right: 0, borderLeft: "none", borderBottom: "none" },
+            { bottom: 0, left: 0, borderRight: "none", borderTop: "none" },
+            { bottom: 0, right: 0, borderLeft: "none", borderTop: "none" },
+          ].map((s, i) => (
+            <div key={i} style={{
+              position: "absolute",
+              width: 24, height: 24,
+              border: "3px solid #00c8f0",
+              ...s,
+            }} />
+          ))}
+          <div style={{
+            position: "absolute", bottom: -28, left: 0, right: 0,
+            textAlign: "center", color: "#4a6a85", fontSize: 11,
+          }}>
+            機材を枠内に収めてください
+          </div>
+        </div>
+
+        {/* Web版カメラ注記 */}
+        <div style={{
+          position: "absolute", bottom: 12,
+          color: "#4a6a85", fontSize: 11, textAlign: "center",
+        }}>
+          📱 カメラ機能はアプリ版で利用できます
+        </div>
+      </div>
+
+      {/* 結果エリア */}
+      {scanned && result ? (
+        <div style={{
+          backgroundColor: "#0d1117",
+          margin: 16, borderRadius: 16, padding: 20,
+          display: "flex", flexDirection: "column", gap: 10,
+        }}>
+          <span style={{ color: "#4a6a85", fontSize: 12 }}>
+            AI信頼度: {confidence}%
+          </span>
+          <div style={{ height: 6, backgroundColor: "#131c2e", borderRadius: 3, overflow: "hidden" }}>
+            <div style={{
+              height: 6, borderRadius: 3,
+              width: `${confidence}%`,
+              backgroundColor: "#00c8f0",
+            }} />
+          </div>
+          <div style={{ color: "#fff", fontSize: 22, fontWeight: 700 }}>
+            {result}
+          </div>
+          <div style={{ display: "flex", gap: 12 }}>
+            <button style={{
+              flex: 1, backgroundColor: "#00c8f0",
+              padding: 14, borderRadius: 12, border: "none",
+              color: "#07090f", fontWeight: 700, fontSize: 14, cursor: "pointer",
+            }}>
+              MY GEARに追加
+            </button>
+            <button onClick={reset} style={{
+              flex: 1, backgroundColor: "transparent",
+              padding: 14, borderRadius: 12,
+              border: "1px solid #00c8f0",
+              color: "#00c8f0", fontWeight: 700, fontSize: 14, cursor: "pointer",
+            }}>
+              再スキャン
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div style={{ padding: 20, display: "flex", justifyContent: "center" }}>
+          <button onClick={handleScan} style={{
+            backgroundColor: "#00c8f0",
+            padding: "16px 56px", borderRadius: 50,
+            border: "none", color: "#07090f",
+            fontWeight: 800, fontSize: 16, cursor: "pointer",
+          }}>
+            スキャン
+          </button>
+        </div>
+      )}
     </div>
   );
 }
