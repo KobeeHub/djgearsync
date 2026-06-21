@@ -18,7 +18,8 @@ import {
   type ProNotification,
   type UserGearSetup,
 } from "@/lib/mygear-data";
-
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 const IS_PRO_USER = false;
 
 function StarRating({ rating }: { rating: number }) {
@@ -336,6 +337,38 @@ function SectionTitle({ children, pro }: { children: React.ReactNode; pro?: bool
 }
 
 export default function MyGearPage() {
+  const [gearSetups, setGearSetups] = useState<UserGearSetup[]>(USER_GEAR_SETUPS);
+
+  useEffect(() => {
+    async function fetchGearProfiles() {
+      const { data, error } = await supabase
+        .from("my_gear_profiles")
+        .select("*");
+
+      if (error) {
+        console.error("Supabase fetch error:", error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        const mapped: UserGearSetup[] = data.map((row: any) => ({
+          id: row.id,
+          name: row.profile_name ?? "未設定のセットアップ",
+          isMain: true,
+          starRating: 3,
+          player: "未設定",
+          mixer: "未設定",
+          software: "未設定",
+          pc: "未設定",
+          score: 0,
+          headerGradient: ["#00c8f0", "#0d1117"],
+        }));
+        setGearSetups(mapped);
+      }
+    }
+
+    fetchGearProfiles();
+  }, []);
   return (
     <div className="flex flex-1 flex-col" style={{ backgroundColor: BG }}>
       <header className="border-b border-slate-800 px-4 py-4 sm:px-6">
@@ -388,7 +421,7 @@ export default function MyGearPage() {
           <section>
             <SectionTitle>MY GEAR セットアップ</SectionTitle>
             <div className="grid gap-4 sm:grid-cols-2">
-              {USER_GEAR_SETUPS.map((setup) => (
+              {gearSetups.map((setup) => (
                 <GearSetupCard key={setup.id} setup={setup} />
               ))}
             </div>
