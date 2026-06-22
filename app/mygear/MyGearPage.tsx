@@ -337,7 +337,8 @@ function SectionTitle({ children, pro }: { children: React.ReactNode; pro?: bool
 }
 
 export default function MyGearPage() {
-  const [gearSetups, setGearSetups] = useState<UserGearSetup[]>(USER_GEAR_SETUPS);
+  const [gearSetups, setGearSetups] = useState<UserGearSetup[]>(USER_GEAR_SETUPS);const [showAddForm, setShowAddForm] = useState(false);
+  const [newSetupName, setNewSetupName] = useState("");
 
   useEffect(() => {
     async function fetchGearProfiles() {
@@ -369,7 +370,43 @@ export default function MyGearPage() {
 
     fetchGearProfiles();
   }, []);
-  return (
+  async function handleSaveSetup() {
+    if (!newSetupName.trim()) {
+      alert("セットアップ名を入力してください");
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("my_gear_profiles")
+      .insert([{ profile_name: newSetupName }])
+      .select();
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+      alert("保存に失敗しました");
+      return;
+    }
+
+    if (data && data.length > 0) {
+      const newSetup: UserGearSetup = {
+        id: data[0].id,
+        name: data[0].profile_name,
+        isMain: false,
+        starRating: 3,
+        player: "未設定",
+        mixer: "未設定",
+        software: "未設定",
+        pc: "未設定",
+        score: 0,
+        headerGradient: ["#00c8f0", "#0d1117"],
+      };
+      setGearSetups([...gearSetups, newSetup]
+      );
+      setShowAddForm(false);
+      setNewSetupName("");
+    }
+  }
+    return (
     <div className="flex flex-1 flex-col" style={{ backgroundColor: BG }}>
       <header className="border-b border-slate-800 px-4 py-4 sm:px-6">
         <div className="mx-auto flex max-w-3xl items-center justify-between">
@@ -425,6 +462,47 @@ export default function MyGearPage() {
                 <GearSetupCard key={setup.id} setup={setup} />
               ))}
             </div>
+            <button
+          onClick={() => setShowAddForm(true)}
+          className="w-full rounded-lg border border-dashed py-4 text-sm font-medium transition-colors hover:opacity-80"
+          style={{ borderColor: NEON, color: NEON }}
+        >
+          ＋ 新規セットアップを追加
+        </button>
+        {showAddForm && (
+          <div
+            className="rounded-lg border p-4 space-y-3"
+            style={{ borderColor: "#1e293b", backgroundColor: "#0d1117" }}
+          >
+            <input
+              type="text"
+              value={newSetupName}
+              onChange={(e) => setNewSetupName(e.target.value)}
+              placeholder="セットアップ名を入力（例：自宅練習用）"
+              className="w-full rounded px-3 py-2 text-sm"
+              style={{ backgroundColor: "#131c2e", color: "white", border: "1px solid #1e293b" }}
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={handleSaveSetup}
+                className="flex-1 rounded py-2 text-sm font-bold"
+                style={{ backgroundColor: NEON, color: "#07090f" }}
+              >
+                保存する
+              </button>
+              <button
+                onClick={() => {
+                  setShowAddForm(false);
+                  setNewSetupName("");
+                }}
+                className="flex-1 rounded py-2 text-sm font-medium border"
+                style={{ borderColor: "#1e293b", color: "#94a3b8" }}
+              >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        )}
           </section>
 
           <section>
@@ -450,4 +528,6 @@ export default function MyGearPage() {
       </main>
     </div>
   );
+
 }
+
