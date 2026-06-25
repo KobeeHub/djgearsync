@@ -341,6 +341,9 @@ export default function MyGearPage() {
   const [newSetupName, setNewSetupName] = useState("");
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) window.location.href = "/login";
+    });
     async function fetchGearProfiles() {
       const { data, error } = await supabase
         .from("my_gear_profiles")
