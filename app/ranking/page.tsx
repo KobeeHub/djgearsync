@@ -10,12 +10,12 @@ const DUMMY_USERS = [
   { rank: 1, name: "DJ_TAKA", points: 12500, tier: "Legend", gear: "CDJ-3000 / DJM-900NXS2" },
   { rank: 2, name: "KOBEE", points: 9800, tier: "Champion", gear: "XDJ-RX3 / rekordbox" },
   { rank: 3, name: "DJ_MASA", points: 8200, tier: "Champion", gear: "CDJ-2000NXS2 / DJM-750MK2" },
-  { rank: 4, name: "YUKI_DJ", points: 7650, tier: "Gold", gear: "DDJ-1000 / Serato" },
-  { rank: 5, name: "BEAT_KEN", points: 6300, tier: "Gold", gear: "CDJ-3000 / DJM-V10" },
-  { rank: 6, name: "DJ_SORA", points: 5100, tier: "Silver", gear: "XDJ-700 / Traktor" },
-  { rank: 7, name: "MIKU_DJ", points: 4800, tier: "Silver", gear: "DDJ-400 / rekordbox" },
-  { rank: 8, name: "RYU_BEAT", points: 3900, tier: "Club", gear: "CDJ-2000NXS2 / DJM-900NXS2" },
-  { rank: 9, name: "DJ_HANA", points: 3200, tier: "Club", gear: "SC6000 / X1850" },
+  { rank: 4, name: "YUKI_DJ", points: 7650, tier: "Master", gear: "DDJ-1000 / Serato" },
+  { rank: 5, name: "BEAT_KEN", points: 6300, tier: "Master", gear: "CDJ-3000 / DJM-V10" },
+  { rank: 6, name: "DJ_SORA", points: 5100, tier: "ProDJ", gear: "XDJ-700 / Traktor" },
+  { rank: 7, name: "MIKU_DJ", points: 4800, tier: "ProDJ", gear: "DDJ-400 / rekordbox" },
+  { rank: 8, name: "RYU_BEAT", points: 3900, tier: "Digger", gear: "CDJ-2000NXS2 / DJM-900NXS2" },
+  { rank: 9, name: "DJ_HANA", points: 3200, tier: "Digger", gear: "SC6000 / X1850" },
   { rank: 10, name: "TAKESHI_B", points: 2800, tier: "Rookie", gear: "DDJ-200 / rekordbox" },
 ];
 
@@ -53,9 +53,9 @@ const GEAR_CATEGORIES = [
 const TIER_COLORS: Record<string, string> = {
   Legend: "#ff6b35",
   Champion: "#a855f7",
-  Gold: "#f0a500",
-  Silver: "#94a3b8",
-  Club: "#00c8f0",
+  Master: "#f0a500",
+  ProDJ: "#94a3b8",
+  Digger: "#00c8f0",
   Rookie: "#22c55e",
 };
 
