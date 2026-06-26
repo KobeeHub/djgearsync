@@ -387,7 +387,7 @@ export default function MyGearPage() {
 
     const { data, error } = await supabase
       .from("my_gear_profiles")
-      .insert([{ profile_name: newSetupName }])
+      .insert([{ profile_name: newSetupName, user_id: (await supabase.auth.getUser()).data.user?.id }])
       .select();
 
     if (error) {
