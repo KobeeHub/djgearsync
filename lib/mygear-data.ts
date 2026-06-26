@@ -57,10 +57,10 @@ export const TIER_BADGES: TierBadge[] = [
 export const USER_PROFILE = {
   username: "DJ_TAKA",
   initials: "DT",
-  rank: "gold" as const,
-  rankLabel: "Gold",
+  rank: "master" as const,
+  rankLabel: "Master",
   points: 7650,
-  nextTier: "PRO",
+  nextTier: "Champion",
   nextTierPoints: 10000,
   coverGradient: ["#0a1628", "#1a3a5c"] as [string, string],
   avatarGradient: ["#00c8f0", "#0066aa"] as [string, string],
