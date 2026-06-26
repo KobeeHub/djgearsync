@@ -22,7 +22,8 @@ import {
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 const IS_PRO_USER = false;
-
+const FREE_LIMIT = 1;
+const PRO_LIMIT = 4;
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex gap-0.5">
@@ -480,13 +481,26 @@ export default function MyGearPage() {
                 <GearSetupCard key={setup.id} setup={setup} />
               ))}
             </div>
-            <button
-          onClick={() => setShowAddForm(true)}
-          className="w-full rounded-lg border border-dashed py-4 text-sm font-medium transition-colors hover:opacity-80"
-          style={{ borderColor: NEON, color: NEON }}
-        >
-          ＋ 新規セットアップを追加
-        </button>
+            {(() => {
+        const limit = IS_PRO_USER ? PRO_LIMIT : FREE_LIMIT;
+        const canAdd = gearSetups.length < limit;
+        return canAdd ? (
+          <button
+            onClick={() => setShowAddForm(true)}
+            className="w-full rounded-lg border-dashed py-4 text-sm font-medium transition-colors hover:opacity-80"
+            style={{ borderColor: NEON, color: NEON }}
+          >
+            + 新規セットアップを追加
+          </button>
+        ) : (
+          <div
+            className="w-full rounded-lg border-dashed py-4 text-sm font-medium text-center"
+            style={{ borderColor: "#1e293b", color: "#475569", border: "1px dashed" }}
+          >
+            {IS_PRO_USER ? `上限${PRO_LIMIT}件に達しました` : `FREEプランは${FREE_LIMIT}件まで（PROにアップグレードで${PRO_LIMIT}件）`}
+          </div>
+        );
+      })()}
         {showAddForm && (
           <div
             className="rounded-lg border p-4 space-y-3"
