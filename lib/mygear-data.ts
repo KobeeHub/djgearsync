@@ -47,9 +47,9 @@ export const BG = "#07090f";
 
 export const TIER_BADGES: TierBadge[] = [
   { id: "rookie", icon: "🎧", label: "Rookie", minPoints: 0 },
-  { id: "club", icon: "🎚", label: "Club", minPoints: 500 },
-  { id: "sound", icon: "🔊", label: "Sound", minPoints: 2000 },
-  { id: "studio", icon: "🎛", label: "Studio", minPoints: 5000 },
+  { id: "digger", icon: "🎵", label: "Digger", minPoints: 500 },
+  { id: "prodj", icon: "🔊", label: "ProDJ", minPoints: 2000 },
+  { id: "master", icon: "🎛️", label: "Master", minPoints: 5000 },
   { id: "champion", icon: "🏆", label: "Champion", minPoints: 8000 },
   { id: "legend", icon: "👑", label: "Legend", minPoints: 12000 },
 ];
