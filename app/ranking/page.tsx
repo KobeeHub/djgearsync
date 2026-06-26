@@ -21,15 +21,33 @@ const DUMMY_USERS = [
 
 const DUMMY_GEAR = [
   { rank: 1, name: "CDJ-3000", brand: "Pioneer DJ", category: "プレイヤー", users: 3420, share: 34 },
-  { rank: 2, name: "DJM-900NXS2", brand: "Pioneer DJ", category: "ミキサー", users: 2980, share: 29 },
-  { rank: 3, name: "XDJ-RX3", brand: "Pioneer DJ", category: "一体型", users: 2100, share: 21 },
-  { rank: 4, name: "rekordbox", brand: "Pioneer DJ", category: "ソフト", users: 1980, share: 19 },
-  { rank: 5, name: "CDJ-2000NXS2", brand: "Pioneer DJ", category: "プレイヤー", users: 1750, share: 17 },
-  { rank: 6, name: "DDJ-1000", brand: "Pioneer DJ", category: "コントローラー", users: 1540, share: 15 },
-  { rank: 7, name: "DJM-V10", brand: "Pioneer DJ", category: "ミキサー", users: 980, share: 9 },
-  { rank: 8, name: "Serato DJ Pro", brand: "Serato", category: "ソフト", users: 870, share: 8 },
-  { rank: 9, name: "SC6000", brand: "Denon DJ", category: "プレイヤー", users: 760, share: 7 },
-  { rank: 10, name: "Traktor Pro 3", brand: "Native Instruments", category: "ソフト", users: 650, share: 6 },
+  { rank: 2, name: "CDJ-2000NXS2", brand: "Pioneer DJ", category: "プレイヤー", users: 2100, share: 21 },
+  { rank: 3, name: "SC6000", brand: "Denon DJ", category: "プレイヤー", users: 760, share: 7 },
+  { rank: 4, name: "XDJ-700", brand: "Pioneer DJ", category: "プレイヤー", users: 650, share: 6 },
+  { rank: 5, name: "CDJ-900NXS2", brand: "Pioneer DJ", category: "プレイヤー", users: 480, share: 4 },
+  { rank: 1, name: "DJM-900NXS2", brand: "Pioneer DJ", category: "ミキサー", users: 2980, share: 29 },
+  { rank: 2, name: "DJM-V10", brand: "Pioneer DJ", category: "ミキサー", users: 980, share: 9 },
+  { rank: 3, name: "DJM-750MK2", brand: "Pioneer DJ", category: "ミキサー", users: 870, share: 8 },
+  { rank: 4, name: "X1850", brand: "Denon DJ", category: "ミキサー", users: 540, share: 5 },
+  { rank: 5, name: "XONE:96", brand: "Allen & Heath", category: "ミキサー", users: 320, share: 3 },
+  { rank: 1, name: "rekordbox", brand: "Pioneer DJ", category: "ソフト", users: 1980, share: 19 },
+  { rank: 2, name: "Serato DJ Pro", brand: "Serato", category: "ソフト", users: 870, share: 8 },
+  { rank: 3, name: "Traktor Pro 3", brand: "Native Instruments", category: "ソフト", users: 650, share: 6 },
+  { rank: 4, name: "Virtual DJ", brand: "Atomix", category: "ソフト", users: 420, share: 4 },
+  { rank: 5, name: "djay Pro", brand: "Algoriddim", category: "ソフト", users: 280, share: 2 },
+  { rank: 1, name: "DDJ-1000", brand: "Pioneer DJ", category: "コントローラー", users: 1540, share: 15 },
+  { rank: 2, name: "DDJ-400", brand: "Pioneer DJ", category: "コントローラー", users: 980, share: 9 },
+  { rank: 3, name: "XDJ-RX3", brand: "Pioneer DJ", category: "コントローラー", users: 760, share: 7 },
+  { rank: 4, name: "DDJ-200", brand: "Pioneer DJ", category: "コントローラー", users: 540, share: 5 },
+  { rank: 5, name: "S4 MK3", brand: "Native Instruments", category: "コントローラー", users: 320, share: 3 },
+];
+
+const GEAR_CATEGORIES = [
+  { id: "すべて", label: "🎛️ すべて" },
+  { id: "プレイヤー", label: "💿 プレイヤー" },
+  { id: "ミキサー", label: "🎚️ ミキサー" },
+  { id: "ソフト", label: "💻 ソフト" },
+  { id: "コントローラー", label: "🕹️ コントローラー" },
 ];
 
 const TIER_COLORS: Record<string, string> = {
@@ -50,6 +68,11 @@ function RankMedal({ rank }: { rank: number }) {
 
 export default function RankingPage() {
   const [activeTab, setActiveTab] = useState<"users" | "gear">("users");
+  const [gearCategory, setGearCategory] = useState("すべて");
+
+  const filteredGear = gearCategory === "すべて"
+    ? [...DUMMY_GEAR].sort((a, b) => b.users - a.users).map((g, i) => ({ ...g, rank: i + 1 }))
+    : DUMMY_GEAR.filter((g) => g.category === gearCategory);
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: BG, paddingBottom: 80 }}>
@@ -66,7 +89,7 @@ export default function RankingPage() {
           <p style={{ color: "#94a3b8", fontSize: 13 }}>世界中のDJとギアのリアルタイム順位</p>
         </div>
 
-        {/* タブ */}
+        {/* メインタブ */}
         <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
           {[{ id: "users", label: "👤 ユーザー" }, { id: "gear", label: "🎛️ ギア人気" }].map((tab) => (
             <button
@@ -93,21 +116,8 @@ export default function RankingPage() {
         {activeTab === "users" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {DUMMY_USERS.map((user) => (
-              <div
-                key={user.rank}
-                style={{
-                  backgroundColor: "#0d1117",
-                  border: "1px solid #1e293b",
-                  borderRadius: 12,
-                  padding: "14px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <div style={{ width: 32, textAlign: "center" }}>
-                  <RankMedal rank={user.rank} />
-                </div>
+              <div key={user.rank} style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b", borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 32, textAlign: "center" }}><RankMedal rank={user.rank} /></div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
                     <span style={{ color: "white", fontWeight: 700, fontSize: 15 }}>{user.name}</span>
@@ -126,36 +136,48 @@ export default function RankingPage() {
 
         {/* ギア人気ランキング */}
         {activeTab === "gear" && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {DUMMY_GEAR.map((gear) => (
-              <div
-                key={gear.rank}
-                style={{
-                  backgroundColor: "#0d1117",
-                  border: "1px solid #1e293b",
-                  borderRadius: 12,
-                  padding: "14px 16px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <div style={{ width: 32, textAlign: "center" }}>
-                  <RankMedal rank={gear.rank} />
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                    <span style={{ color: "white", fontWeight: 700, fontSize: 15 }}>{gear.name}</span>
-                    <span style={{ color: "#94a3b8", fontSize: 11, backgroundColor: "#1e293b", padding: "2px 8px", borderRadius: 999 }}>{gear.category}</span>
+          <div>
+            {/* カテゴリータブ */}
+            <div style={{ display: "flex", gap: 6, marginBottom: 16, flexWrap: "wrap" }}>
+              {GEAR_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setGearCategory(cat.id)}
+                  style={{
+                    padding: "6px 14px",
+                    borderRadius: 999,
+                    border: "1px solid",
+                    borderColor: gearCategory === cat.id ? GOLD : "#1e293b",
+                    backgroundColor: gearCategory === cat.id ? `${GOLD}22` : "transparent",
+                    color: gearCategory === cat.id ? GOLD : "#94a3b8",
+                    fontWeight: 600,
+                    fontSize: 12,
+                    cursor: "pointer",
+                  }}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {filteredGear.map((gear) => (
+                <div key={`${gear.category}-${gear.rank}`} style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b", borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 32, textAlign: "center" }}><RankMedal rank={gear.rank} /></div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                      <span style={{ color: "white", fontWeight: 700, fontSize: 15 }}>{gear.name}</span>
+                      <span style={{ color: "#94a3b8", fontSize: 11, backgroundColor: "#1e293b", padding: "2px 8px", borderRadius: 999 }}>{gear.category}</span>
+                    </div>
+                    <span style={{ color: "#94a3b8", fontSize: 12 }}>{gear.brand}</span>
                   </div>
-                  <span style={{ color: "#94a3b8", fontSize: 12 }}>{gear.brand}</span>
+                  <div style={{ textAlign: "right" }}>
+                    <div style={{ color: NEON, fontWeight: 800, fontSize: 15 }}>{gear.share}%</div>
+                    <div style={{ color: "#94a3b8", fontSize: 11 }}>{gear.users.toLocaleString()}人</div>
+                  </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ color: NEON, fontWeight: 800, fontSize: 15 }}>{gear.share}%</div>
-                  <div style={{ color: "#94a3b8", fontSize: 11 }}>{gear.users.toLocaleString()}人</div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </main>
