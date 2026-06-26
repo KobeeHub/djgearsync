@@ -1,6 +1,6 @@
 import { getGearName } from "@/lib/gear-data";
 
-export type TierBadgeId = "rookie" | "club" | "sound" | "studio" | "champion" | "legend";
+export type TierBadgeId = "rookie" | "digger" | "prodj" | "master" | "champion" | "legend";
 
 export interface TierBadge {
   id: TierBadgeId;
