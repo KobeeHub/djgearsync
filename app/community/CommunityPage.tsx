@@ -246,7 +246,7 @@ export default function CommunityPage() {
           )}
         </div>
 
-        {activeFilter === "すべて" && <GlobalRanking />}
+        {(activeFilter as string) === "すべて" && <GlobalRanking />}
       </main>
     </div>
   );
