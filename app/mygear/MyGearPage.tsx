@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ACHIEVEMENTS,
   BG,
@@ -339,7 +340,12 @@ function SectionTitle({ children, pro }: { children: React.ReactNode; pro?: bool
 export default function MyGearPage() {
   const [gearSetups, setGearSetups] = useState<UserGearSetup[]>(USER_GEAR_SETUPS);const [showAddForm, setShowAddForm] = useState(false);
   const [newSetupName, setNewSetupName] = useState("");
+  const router = useRouter();
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
+  };
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) window.location.href = "/login";
@@ -420,9 +426,18 @@ export default function MyGearPage() {
           >
             DJ GEAR SYNC
           </Link>
-          <span className="text-xs text-slate-500">MY GEAR</span>
-        </div>
-      </header>
+          <div className="flex items-center gap-3">
+              <span className="text-xs text-slate-500">MY GEAR</span>
+              <button
+                onClick={handleLogout}
+                className="text-xs px-3 py-1 rounded border"
+                style={{ borderColor: "#1e293b", color: "#94a3b8" }}
+              >
+                ログアウト
+              </button>
+            </div>
+          </div>
+        </header>
 
       <main className="mx-auto w-full max-w-3xl">
         <CoverArea />
