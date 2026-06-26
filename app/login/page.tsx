@@ -8,6 +8,12 @@ const BG = "#07090f";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
+  const handleGoogleLogin = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: "https://djgearsync.vercel.app/mygear" },
+    });
+  };
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -72,7 +78,17 @@ export default function LoginPage() {
           >
             {isSignUp ? "すでにアカウントをお持ちの方はこちら" : "アカウントをお持ちでない方はこちら"}
           </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", margin: "8px 0" }}>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
+          <span style={{ color: "#8899aa", fontSize: "12px" }}>または</span>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
         </div>
+        <button
+          onClick={handleGoogleLogin}
+          style={{ padding: "12px", backgroundColor: "white", color: "#000", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "15px" }}
+        >
+          Googleでログイン
+        </button></div>
       </div>
     </div>
   );
