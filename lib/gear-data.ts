@@ -13,7 +13,7 @@ export type GearCategory =
   | "mixer"
   | "software"
   | "device"
-  | "controller";
+  | "controller" | "pc";
 
 // ─── 基本型 ─────────────────────────────────────────────────
 export interface GearOption {

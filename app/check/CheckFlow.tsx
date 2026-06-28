@@ -12,6 +12,7 @@ import {
   type SetupType,
   type CompatibilityError,
   type GearOption,
+  type MyGearSet,
 } from "@/lib/gear-data";
 
 const NEON = "#00c8f0";
@@ -325,7 +326,7 @@ export default function CheckFlow() {
   const [result, setResult] = useState<{
     score: number;
     errors: CompatibilityError[];
-    matchingSets: never[];
+    matchingSets: MyGearSet[];
   } | null>(null);
 
   const steps = setupType ? getSteps(setupType) : [];
