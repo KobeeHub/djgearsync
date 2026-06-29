@@ -95,9 +95,8 @@ function SetupTypeCard({
 }) {
   const icons: Record<string, string> = {
     "dvs-cdj": "💿",
-    "dvs-turntable": "🎵",
+    "dvs-turntable": "🎚️",
     "controller": "🎛️",
-    "standalone": "📀",
   };
   return (
     <button

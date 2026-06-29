@@ -44,10 +44,9 @@ export interface MyGearSet {
 
 // ─── セットアップタイプ ──────────────────────────────────────
 export const SETUP_TYPES: GearOption[] = [
-  { id: "dvs-cdj",        name: "DVS（CDJ/マルチプレイヤー使用）", manufacturer: "" },
-  { id: "dvs-turntable",  name: "DVS（ターンテーブル使用）",       manufacturer: "" },
-  { id: "controller",     name: "オールインワン（DJコントローラー）", manufacturer: "" },
-  { id: "standalone",     name: "スタンドアロン（ソフト不要）",     manufacturer: "" },
+  { id: "dvs-cdj",       name: "CDJ / マルチプレイヤー",           manufacturer: "" },
+  { id: "dvs-turntable", name: "ターンテーブル",                    manufacturer: "" },
+  { id: "controller",    name: "DJコントローラー（オールインワン）", manufacturer: "" },
 ];
 
 // ─── CDJ / マルチプレイヤー ──────────────────────────────────
@@ -192,7 +191,6 @@ export const GEAR_OPTIONS: Partial<Record<GearCategory, GearOption[]>> = {
 // ─── ステップ定義（セットアップタイプ別）────────────────────
 export const STEPS_DVS_CDJ: { key: GearCategory; label: string }[] = [
   { key: "player",   label: "CDJ/プレイヤー" },
-  { key: "phase",    label: "Phase" },
   { key: "mixer",    label: "ミキサー" },
   { key: "software", label: "DJソフト" },
   { key: "device",   label: "デバイス" },
@@ -226,7 +224,7 @@ export function getSteps(setupType: SetupType): { key: GearCategory; label: stri
     case "dvs-cdj":        return STEPS_DVS_CDJ;
     case "dvs-turntable":  return STEPS_DVS_TURNTABLE;
     case "controller":     return STEPS_CONTROLLER;
-    case "standalone":     return STEPS_STANDALONE;
+
   }
 }
 
