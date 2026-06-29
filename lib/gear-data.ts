@@ -224,6 +224,7 @@ export function getSteps(setupType: SetupType): { key: GearCategory; label: stri
     case "dvs-cdj":        return STEPS_DVS_CDJ;
     case "dvs-turntable":  return STEPS_DVS_TURNTABLE;
     case "controller":     return STEPS_CONTROLLER;
+    default:               return STEPS_DVS_CDJ;
 
   }
 }
