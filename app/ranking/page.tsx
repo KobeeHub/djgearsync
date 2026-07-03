@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 const NEON = "#00c8f0";
@@ -120,7 +121,7 @@ export default function RankingPage() {
                 <div style={{ width: 32, textAlign: "center" }}><RankMedal rank={user.rank} /></div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                    <span style={{ color: "white", fontWeight: 700, fontSize: 15 }}>{user.name}</span>
+                    <Link href="/mygear" style={{ color: "white", fontWeight: 700, fontSize: 15, textDecoration: "none", cursor: "pointer" }} className="hover:opacity-70 transition-opacity">{user.name}</Link>
                     <span style={{ color: TIER_COLORS[user.tier], fontSize: 11, fontWeight: 600, backgroundColor: `${TIER_COLORS[user.tier]}22`, padding: "2px 8px", borderRadius: 999 }}>{user.tier}</span>
                   </div>
                   <span style={{ color: "#94a3b8", fontSize: 12 }}>{user.gear}</span>
