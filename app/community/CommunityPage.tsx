@@ -167,11 +167,16 @@ function GlobalRanking() {
 export default function CommunityPage() {
   const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
   const [postInput, setPostInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const filteredPosts = useMemo(() => {
-    if (activeFilter === "all") return COMMUNITY_POSTS;
-    return COMMUNITY_POSTS.filter((post) => post.type === activeFilter);
-  }, [activeFilter]);
+    let posts = activeFilter === "all" ? COMMUNITY_POSTS : COMMUNITY_POSTS.filter((p) => p.type === activeFilter);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      posts = posts.filter((p) => p.title.toLowerCase().includes(q) || p.body.toLowerCase().includes(q) || (p.gearSet ?? "").toLowerCase().includes(q));
+    }
+    return posts;
+  }, [activeFilter, searchQuery]);
 
   return (
     <div className="flex flex-1 flex-col" style={{ backgroundColor: BG }}>
@@ -215,7 +220,13 @@ export default function CommunityPage() {
           </button>
         </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-4 flex items-center gap-2 rounded-lg px-3 py-2" style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
+          <span className="text-slate-500 text-sm">🔍</span>
+          <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="機材名・投稿内容を検索..." className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none" />
+          {searchQuery && (<button type="button" onClick={() => setSearchQuery("")} className="text-slate-500 hover:text-white text-xs">✕</button>)}
+        </div>
+
+        <div className="mt-3 flex flex-wrap gap-2">
           {FILTER_TABS.map((tab) => {
             const isActive = activeFilter === tab.key;
             return (
