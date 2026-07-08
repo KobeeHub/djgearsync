@@ -320,6 +320,118 @@ function NotificationArea({ notifications, locked }: { notifications: ProNotific
   );
 }
 
+const COUNTRIES: { code: string; flag: string; name: string }[] = [
+  { code: "JP", flag: "🇯🇵", name: "日本" },
+  { code: "US", flag: "🇺🇸", name: "アメリカ" },
+  { code: "GB", flag: "🇬🇧", name: "イギリス" },
+  { code: "DE", flag: "🇩🇪", name: "ドイツ" },
+  { code: "FR", flag: "🇫🇷", name: "フランス" },
+  { code: "KR", flag: "🇰🇷", name: "韓国" },
+  { code: "CN", flag: "🇨🇳", name: "中国" },
+  { code: "AU", flag: "🇦🇺", name: "オーストラリア" },
+  { code: "BR", flag: "🇧🇷", name: "ブラジル" },
+  { code: "MX", flag: "🇲🇽", name: "メキシコ" },
+  { code: "ES", flag: "🇪🇸", name: "スペイン" },
+  { code: "IT", flag: "🇮🇹", name: "イタリア" },
+  { code: "NL", flag: "🇳🇱", name: "オランダ" },
+  { code: "TH", flag: "🇹🇭", name: "タイ" },
+  { code: "SG", flag: "🇸🇬", name: "シンガポール" },
+  { code: "ID", flag: "🇮🇩", name: "インドネシア" },
+  { code: "PH", flag: "🇵🇭", name: "フィリピン" },
+  { code: "ZA", flag: "🇿🇦", name: "南アフリカ" },
+  { code: "CA", flag: "🇨🇦", name: "カナダ" },
+  { code: "AR", flag: "🇦🇷", name: "アルゼンチン" },
+];
+
+function getFlag(code: string): string {
+  return COUNTRIES.find((c) => c.code === code)?.flag ?? "🏳️";
+}
+
+function CountryEditor({
+  basedCountry, setBasedCountry, playedCountries, setPlayedCountries, onClose,
+}: {
+  basedCountry: string;
+  setBasedCountry: (v: string) => void;
+  playedCountries: string[];
+  setPlayedCountries: (v: string[]) => void;
+  onClose: () => void;
+}) {
+  function togglePlayed(code: string) {
+    if (playedCountries.includes(code)) {
+      setPlayedCountries(playedCountries.filter((c) => c !== code));
+    } else if (playedCountries.length < 10) {
+      setPlayedCountries([...playedCountries, code]);
+    }
+  }
+  return (
+    <div className="rounded-lg p-4 space-y-4" style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
+      <div>
+        <p className="text-xs font-medium mb-2" style={{ color: NEON }}>BASED（拠点国）</p>
+        <select value={basedCountry} onChange={(e) => setBasedCountry(e.target.value)}
+          className="w-full rounded px-3 py-2 text-sm"
+          style={{ backgroundColor: "#131c2e", color: "white", border: "1px solid #1e293b" }}>
+          {COUNTRIES.map((c) => <option key={c.code} value={c.code}>{c.flag} {c.name}</option>)}
+        </select>
+      </div>
+      <div>
+        <p className="text-xs font-medium mb-2" style={{ color: NEON }}>PLAYED（最大10カ国）{playedCountries.length}/10</p>
+        <div className="flex flex-wrap gap-2">
+          {COUNTRIES.map((c) => {
+            const selected = playedCountries.includes(c.code);
+            return (
+              <button key={c.code} type="button" onClick={() => togglePlayed(c.code)}
+                className="rounded-full px-2 py-1 text-xs transition-all"
+                style={{
+                  backgroundColor: selected ? `${NEON}20` : "transparent",
+                  border: `1px solid ${selected ? NEON : "#334155"}`,
+                  color: selected ? NEON : "#94a3b8",
+                  opacity: !selected && playedCountries.length >= 10 ? 0.4 : 1,
+                }}>
+                {c.flag} {c.name}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <button type="button" onClick={onClose} className="w-full rounded-full py-2 text-sm font-bold"
+        style={{ backgroundColor: NEON, color: "#07090f" }}>
+        保存する
+      </button>
+    </div>
+  );
+}
+
+function StatsRow({ isProUser }: { isProUser: boolean }) {
+  return (
+    <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
+      {[
+        { label: "フォロー", value: "128", pro: false },
+        { label: "フォロワー", value: "342", pro: false },
+        { label: "MY いいね", value: "1.2k", pro: false },
+        { label: "MY投稿数", value: "47", pro: false },
+        { label: "MY LINK", value: "設定する", pro: true },
+        { label: "MY EVENT", value: "設定する", pro: true },
+      ].map((stat) => (
+        <div key={stat.label} className="flex flex-col items-center rounded-lg py-3 px-2 text-center"
+          style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
+          {stat.pro && !isProUser ? (
+            <>
+              <span className="text-base font-bold" style={{ color: "#475569" }}>🔒</span>
+              <span className="mt-1 text-[10px]" style={{ color: "#475569" }}>{stat.label}</span>
+              <span className="text-[9px] font-bold" style={{ color: GOLD }}>PRO</span>
+            </>
+          ) : (
+            <>
+              <span className="text-base font-bold text-white">{stat.value}</span>
+              <span className="mt-1 text-[10px] text-slate-400">{stat.label}</span>
+            </>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SectionTitle({ children, pro }: { children: React.ReactNode; pro?: boolean }) {
   return (
     <div className="mb-4 flex items-center gap-2">
@@ -339,7 +451,10 @@ function SectionTitle({ children, pro }: { children: React.ReactNode; pro?: bool
 }
 
 export default function MyGearPage() {
-  const [gearSetups, setGearSetups] = useState<UserGearSetup[]>(USER_GEAR_SETUPS);const [showAddForm, setShowAddForm] = useState(false);
+  const [gearSetups, setGearSetups] = useState<UserGearSetup[]>(USER_GEAR_SETUPS);
+  const [basedCountry, setBasedCountry] = useState<string>("JP");
+  const [playedCountries, setPlayedCountries] = useState<string[]>(["US", "GB"]);
+  const [showCountryEditor, setShowCountryEditor] = useState(false);const [showAddForm, setShowAddForm] = useState(false);
   const [newSetupName, setNewSetupName] = useState("");
   const router = useRouter();
 
@@ -468,6 +583,40 @@ export default function MyGearPage() {
               </span>
             </div>
 
+            {/* 国旗エリア */}
+            <div className="mt-3 flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold tracking-wider text-slate-500">BASED</span>
+                <span className="text-xl">{getFlag(basedCountry)}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold tracking-wider text-slate-500">PLAYED</span>
+                <div className="flex gap-0.5 flex-wrap">
+                  {playedCountries.map((code) => (
+                    <span key={code} className="text-lg">{getFlag(code)}</span>
+                  ))}
+                </div>
+              </div>
+              <button type="button" onClick={() => setShowCountryEditor(!showCountryEditor)}
+                className="text-[10px] px-2 py-0.5 rounded-full transition-all"
+                style={{ border: `1px solid ${NEON}50`, color: NEON }}>
+                ✏️ 編集
+              </button>
+            </div>
+
+            {showCountryEditor && (
+              <div className="mt-3">
+                <CountryEditor
+                  basedCountry={basedCountry}
+                  setBasedCountry={setBasedCountry}
+                  playedCountries={playedCountries}
+                  setPlayedCountries={setPlayedCountries}
+                  onClose={() => setShowCountryEditor(false)}
+                />
+              </div>
+            )}
+
+            <StatsRow isProUser={IS_PRO_USER} />
             <RankProgressBar />
             <TierBadgeRow />
           </div>
