@@ -10,6 +10,7 @@ const navItems = [
   { label: "MY GEAR", href: "/mygear", emoji: "🎛" },
   { label: "スキャン", href: "/scan", emoji: "📷" },
   { label: "ランキング", href: "/ranking", emoji: "🏆" },
+  { label: "設定", href: "/settings", emoji: "⚙️" },
 ];
 
 export default function BottomNav() {
