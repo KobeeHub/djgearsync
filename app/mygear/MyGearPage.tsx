@@ -432,6 +432,140 @@ function StatsRow({ isProUser }: { isProUser: boolean }) {
   );
 }
 
+function DMSection() {
+  const [activeTab, setActiveTab] = useState<"inbox" | "requests">("inbox");
+  const [messageText, setMessageText] = useState("");
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
+  const dummyMessages = [
+    { id: "1", from: "DJ_TAKA", text: "セットアップ最高ですね！", time: "2分前", read: false },
+    { id: "2", from: "BEAT_KEN", text: "CDJ-3000どうですか？", time: "1時間前", read: true },
+    { id: "3", from: "DJ_SORA", text: "今度一緒にやりましょう！", time: "昨日", read: true },
+  ];
+
+  const dummyRequests = [
+    { id: "r1", from: "MIKU_DJ", text: "はじめまして！フォローさせてください", time: "3時間前" },
+    { id: "r2", from: "RYU_BEAT", text: "機材について聞きたいです", time: "2日前" },
+  ];
+
+  return (
+    <div className="rounded-lg overflow-hidden" style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
+      {/* タブ */}
+      <div className="flex border-b border-slate-800">
+        {[{ id: "inbox", label: "受信" }, { id: "requests", label: `リクエスト ${dummyRequests.length}` }].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setActiveTab(tab.id as "inbox" | "requests")}
+            className="flex-1 py-3 text-xs font-medium transition-colors"
+            style={{
+              color: activeTab === tab.id ? NEON : "#94a3b8",
+              borderBottom: activeTab === tab.id ? `2px solid ${NEON}` : "2px solid transparent",
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* メッセージリスト */}
+      <div className="divide-y divide-slate-800">
+        {activeTab === "inbox" && dummyMessages.map((msg) => (
+          <button
+            key={msg.id}
+            type="button"
+            onClick={() => setSelectedUser(selectedUser === msg.from ? null : msg.from)}
+            className="w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-slate-800/30"
+          >
+            <div
+              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+              style={{ background: `linear-gradient(135deg, ${NEON}, #0066aa)` }}
+            >
+              {msg.from[0]}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-white">{msg.from}</span>
+                <span className="text-[10px] text-slate-500">{msg.time}</span>
+              </div>
+              <p className="text-xs text-slate-400 truncate">{msg.text}</p>
+            </div>
+            {!msg.read && (
+              <div className="h-2 w-2 rounded-full flex-shrink-0" style={{ backgroundColor: NEON }} />
+            )}
+          </button>
+        ))}
+
+        {activeTab === "requests" && dummyRequests.map((req) => (
+          <div key={req.id} className="px-4 py-3">
+            <div className="flex items-center gap-3">
+              <div
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #a855f7, #6366f1)" }}
+              >
+                {req.from[0]}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-white">{req.from}</span>
+                  <span className="text-[10px] text-slate-500">{req.time}</span>
+                </div>
+                <p className="text-xs text-slate-400 truncate">{req.text}</p>
+              </div>
+            </div>
+            <div className="mt-2 flex gap-2 pl-12">
+              <button type="button" className="flex-1 rounded-full py-1.5 text-xs font-medium"
+                style={{ backgroundColor: `${NEON}20`, border: `1px solid ${NEON}`, color: NEON }}>
+                承認
+              </button>
+              <button type="button" className="flex-1 rounded-full py-1.5 text-xs font-medium"
+                style={{ backgroundColor: "transparent", border: "1px solid #334155", color: "#94a3b8" }}>
+                拒否
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* 返信エリア */}
+      {selectedUser && activeTab === "inbox" && (
+        <div className="border-t border-slate-800 p-3">
+          <p className="text-xs text-slate-500 mb-2">{selectedUser} に返信</p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              placeholder="メッセージを入力..."
+              className="flex-1 rounded-lg px-3 py-2 text-sm outline-none"
+              style={{ backgroundColor: "#131c2e", color: "white", border: "1px solid #1e293b" }}
+            />
+            <button
+              type="button"
+              disabled={!messageText.trim()}
+              className="rounded-lg px-4 py-2 text-xs font-bold disabled:opacity-30"
+              style={{ backgroundColor: NEON, color: "#07090f" }}
+            >
+              送信
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* 新規DM */}
+      <div className="border-t border-slate-800 p-3">
+        <button
+          type="button"
+          className="w-full rounded-full py-2 text-xs font-medium transition-all hover:opacity-80"
+          style={{ border: `1px solid ${NEON}50`, color: NEON }}
+        >
+          ✉️ 新しいメッセージを送る
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function SectionTitle({ children, pro }: { children: React.ReactNode; pro?: boolean }) {
   return (
     <div className="mb-4 flex items-center gap-2">
@@ -704,6 +838,11 @@ export default function MyGearPage() {
           <section>
             <SectionTitle pro>通知</SectionTitle>
             <NotificationArea notifications={PRO_NOTIFICATIONS} locked={!IS_PRO_USER} />
+          </section>
+
+          <section>
+            <SectionTitle>💬 ダイレクトメッセージ</SectionTitle>
+            <DMSection />
           </section>
         </div>
       </main>
