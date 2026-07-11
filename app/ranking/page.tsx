@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { getTargetUrl, logGearClick } from "@/app/lib/gearClicks";
 
 const NEON = "#00c8f0";
 const GOLD = "#f0a500";
@@ -43,6 +44,27 @@ const DUMMY_GEAR = [
   { rank: 5, name: "S4 MK3", brand: "Native Instruments", category: "コントローラー", users: 320, share: 3 },
 ];
 
+type GearRankItem = (typeof DUMMY_GEAR)[number] & {
+  displayRank: number;
+  categoryRank: number;
+};
+
+async function handleGearClick(gear: GearRankItem) {
+  const targetUrl = getTargetUrl(gear.brand);
+
+  await logGearClick({
+    gearName: gear.name,
+    manufacturer: gear.brand,
+    targetUrl,
+    sourcePage: "ranking",
+    category: gear.category,
+  });
+
+  if (targetUrl) {
+    window.open(targetUrl, "_blank", "noopener,noreferrer");
+  }
+}
+
 const GEAR_CATEGORIES = [
   { id: "すべて", label: "🎛️ すべて" },
   { id: "プレイヤー", label: "💿 プレイヤー" },
@@ -67,16 +89,100 @@ function RankMedal({ rank }: { rank: number }) {
   return <span style={{ color: "#94a3b8", fontWeight: 700, fontSize: 14 }}>#{rank}</span>;
 }
 
+function GearRankRow({ gear }: { gear: GearRankItem }) {
+  const isClickable = gear.categoryRank <= 3;
+
+  const rowStyle: React.CSSProperties = {
+    backgroundColor: "#0d1117",
+    border: `1px solid ${isClickable ? `${NEON}40` : "#1e293b"}`,
+    borderRadius: 12,
+    padding: "14px 16px",
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    cursor: isClickable ? "pointer" : "default",
+    transition: "border-color 0.2s, background-color 0.2s, box-shadow 0.2s",
+  };
+
+  const content = (
+    <>
+      <div style={{ width: 32, textAlign: "center" }}>
+        <RankMedal rank={gear.displayRank} />
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+          <span style={{ color: "white", fontWeight: 700, fontSize: 15 }}>{gear.name}</span>
+          {isClickable && (
+            <span style={{ fontSize: 12, opacity: 0.7 }} title="メーカー公式サイトへ">
+              🔗
+            </span>
+          )}
+          <span
+            style={{
+              color: "#94a3b8",
+              fontSize: 11,
+              backgroundColor: "#1e293b",
+              padding: "2px 8px",
+              borderRadius: 999,
+            }}
+          >
+            {gear.category}
+          </span>
+        </div>
+        <span style={{ color: "#94a3b8", fontSize: 12 }}>{gear.brand}</span>
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <div style={{ color: NEON, fontWeight: 800, fontSize: 15 }}>{gear.share}%</div>
+        <div style={{ color: "#94a3b8", fontSize: 11 }}>{gear.users.toLocaleString()}人</div>
+      </div>
+    </>
+  );
+
+  if (!isClickable) {
+    return <div style={rowStyle}>{content}</div>;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => handleGearClick(gear)}
+      style={{
+        ...rowStyle,
+        width: "100%",
+        textAlign: "left",
+        font: "inherit",
+      }}
+      className="gear-rank-row-clickable"
+    >
+      {content}
+    </button>
+  );
+}
+
 export default function RankingPage() {
   const [activeTab, setActiveTab] = useState<"users" | "gear">("users");
   const [gearCategory, setGearCategory] = useState("すべて");
 
-  const filteredGear = gearCategory === "すべて"
-    ? [...DUMMY_GEAR].sort((a, b) => b.users - a.users).map((g, i) => ({ ...g, rank: i + 1 }))
-    : DUMMY_GEAR.filter((g) => g.category === gearCategory);
+  const filteredGear: GearRankItem[] =
+    gearCategory === "すべて"
+      ? [...DUMMY_GEAR]
+          .sort((a, b) => b.users - a.users)
+          .map((g, i) => ({ ...g, categoryRank: g.rank, displayRank: i + 1 }))
+      : DUMMY_GEAR.filter((g) => g.category === gearCategory).map((g) => ({
+          ...g,
+          categoryRank: g.rank,
+          displayRank: g.rank,
+        }));
 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: BG, paddingBottom: 80 }}>
+      <style jsx global>{`
+        .gear-rank-row-clickable:hover {
+          background-color: #111827 !important;
+          border-color: ${NEON} !important;
+          box-shadow: 0 0 12px ${NEON}25;
+        }
+      `}</style>
       <header style={{ borderBottom: "1px solid #1e293b", padding: "16px 24px" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span style={{ color: NEON, fontWeight: 800, fontSize: 16, letterSpacing: 2 }}>DJ GEAR SYNC</span>
@@ -163,20 +269,7 @@ export default function RankingPage() {
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {filteredGear.map((gear) => (
-                <div key={`${gear.category}-${gear.rank}`} style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b", borderRadius: 12, padding: "14px 16px", display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 32, textAlign: "center" }}><RankMedal rank={gear.rank} /></div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
-                      <span style={{ color: "white", fontWeight: 700, fontSize: 15 }}>{gear.name}</span>
-                      <span style={{ color: "#94a3b8", fontSize: 11, backgroundColor: "#1e293b", padding: "2px 8px", borderRadius: 999 }}>{gear.category}</span>
-                    </div>
-                    <span style={{ color: "#94a3b8", fontSize: 12 }}>{gear.brand}</span>
-                  </div>
-                  <div style={{ textAlign: "right" }}>
-                    <div style={{ color: NEON, fontWeight: 800, fontSize: 15 }}>{gear.share}%</div>
-                    <div style={{ color: "#94a3b8", fontSize: 11 }}>{gear.users.toLocaleString()}人</div>
-                  </div>
-                </div>
+                <GearRankRow key={`${gear.category}-${gear.name}`} gear={gear} />
               ))}
             </div>
           </div>
