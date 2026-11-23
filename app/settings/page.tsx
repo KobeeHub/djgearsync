@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { Icon, type IconName } from "@/app/components/GearIcons";
 
 const NEON = "#00c8f0";
 const GOLD = "#f0a500";
@@ -37,16 +38,16 @@ export default function SettingsPage() {
         <section>
           <h2 className="mb-3 text-xs font-bold tracking-widest text-slate-500 uppercase">アカウント</h2>
           <div className="rounded-xl overflow-hidden" style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
-            {[
-              { label: "プロフィール編集", icon: "👤", href: "/mygear" },
-              { label: "メールアドレス変更", icon: "✉️", href: "#" },
-              { label: "パスワード変更", icon: "🔒", href: "#" },
-            ].map((item, i, arr) => (
+            {([
+              { label: "プロフィール編集", icon: "user", href: "/mygear" },
+              { label: "メールアドレス変更", icon: "mail", href: "#" },
+              { label: "パスワード変更", icon: "lock", href: "#" },
+            ] as { label: string; icon: IconName; href: string }[]).map((item, i, arr) => (
               <Link key={item.label} href={item.href}
                 className="flex items-center justify-between px-4 py-4 transition-colors hover:bg-slate-800/30"
                 style={{ borderBottom: i < arr.length - 1 ? "1px solid #1e293b" : "none" }}>
                 <div className="flex items-center gap-3">
-                  <span>{item.icon}</span>
+                  <span style={{ color: NEON, display: "inline-flex" }}><Icon name={item.icon} size={20} /></span>
                   <span className="text-sm text-white">{item.label}</span>
                 </div>
                 <span className="text-slate-500">›</span>
@@ -83,7 +84,7 @@ export default function SettingsPage() {
                 className="flex w-full items-center justify-between px-4 py-4 transition-colors hover:bg-slate-800/30"
                 style={{ borderBottom: i < arr.length - 1 ? "1px solid #1e293b" : "none" }}>
                 <span className="text-sm text-white">{lang.label}</span>
-                {language === lang.id && <span style={{ color: NEON }}>✓</span>}
+                {language === lang.id && <span style={{ color: NEON, display: "inline-flex" }}><Icon name="check" size={18} /></span>}
               </button>
             ))}
           </div>
@@ -110,16 +111,16 @@ export default function SettingsPage() {
         <section>
           <h2 className="mb-3 text-xs font-bold tracking-widest text-slate-500 uppercase">サポート</h2>
           <div className="rounded-xl overflow-hidden" style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
-            {[
-              { label: "フィードバックを送る", icon: "💬" },
-              { label: "利用規約", icon: "📄" },
-              { label: "プライバシーポリシー", icon: "🔐" },
-            ].map((item, i, arr) => (
+            {([
+              { label: "フィードバックを送る", icon: "chat" },
+              { label: "利用規約", icon: "document" },
+              { label: "プライバシーポリシー", icon: "shield" },
+            ] as { label: string; icon: IconName }[]).map((item, i, arr) => (
               <button key={item.label} type="button"
                 className="flex w-full items-center justify-between px-4 py-4 transition-colors hover:bg-slate-800/30"
                 style={{ borderBottom: i < arr.length - 1 ? "1px solid #1e293b" : "none" }}>
                 <div className="flex items-center gap-3">
-                  <span>{item.icon}</span>
+                  <span style={{ color: NEON, display: "inline-flex" }}><Icon name={item.icon} size={20} /></span>
                   <span className="text-sm text-white">{item.label}</span>
                 </div>
                 <span className="text-slate-500">›</span>

@@ -14,6 +14,7 @@ import {
   type GearOption,
   type MyGearSet,
 } from "@/lib/gear-data";
+import { GearIcon, Icon, type GearCategory as IconType } from "@/app/components/GearIcons";
 
 const NEON = "#00c8f0";
 const BG = "#07090f";
@@ -74,7 +75,7 @@ function StepIndicator({
             className="flex h-7 w-7 items-center justify-center rounded-full text-xs font-medium"
             style={{ backgroundColor: `${NEON}20`, border: `1px solid ${NEON}`, color: NEON }}
           >
-            ✓
+            <Icon name="check" size={16} />
           </div>
           <span className="hidden text-xs sm:inline" style={{ color: NEON }}>結果</span>
         </div>
@@ -93,24 +94,39 @@ function SetupTypeCard({
   selected: boolean;
   onSelect: () => void;
 }) {
-  const icons: Record<string, string> = {
-    "dvs-cdj": "💿",
-    "dvs-turntable": "🎚️",
-    "controller": "🎛️",
+  // タイプごとのアイコンと表記(英語 / 日本語)
+  const visuals: Record<string, { icon: IconType; en: string; ja: string }> = {
+    "dvs-cdj": { icon: "player", en: "DJ Players", ja: "プレーヤー(CDJ / XDJ)" },
+    "dvs-turntable": { icon: "turntable", en: "Turntables", ja: "ターンテーブル" },
+    controller: { icon: "controller", en: "DJ Controllers", ja: "コントローラー" },
+    allinone: { icon: "allinone", en: "All-in-one DJ Systems", ja: "オールインワンDJシステム" },
   };
+  const visual = visuals[option.id];
   return (
     <button
       type="button"
       onClick={onSelect}
-      className="rounded-xl p-5 text-left transition-all w-full"
+      className="flex w-full flex-col items-center rounded-xl px-3 py-5 text-center transition-all hover:opacity-90"
       style={{
         backgroundColor: selected ? `${NEON}15` : "#0d1117",
         border: `1px solid ${selected ? NEON : "#1e293b"}`,
         boxShadow: selected ? `0 0 20px ${NEON}25` : "none",
+        color: selected ? NEON : "#7d84a8",
       }}
     >
-      <span className="text-2xl">{icons[option.id] ?? "🎧"}</span>
-      <p className="mt-2 text-sm font-semibold text-white">{option.name}</p>
+      {visual ? (
+        <>
+          <GearIcon type={visual.icon} size={56} />
+          <p className="mt-3 text-sm font-semibold text-white">{visual.en}</p>
+          <p className="mt-0.5 text-xs text-slate-400">{visual.ja}</p>
+          <p className="mt-2 text-xs" style={{ color: NEON }}>{option.name}</p>
+        </>
+      ) : (
+        <>
+          <Icon name="headphones" size={32} />
+          <p className="mt-2 text-sm font-semibold text-white">{option.name}</p>
+        </>
+      )}
     </button>
   );
 }
@@ -293,13 +309,16 @@ function DeepBanner() {
       }}
     >
       <div className="mb-2 text-xs font-bold uppercase tracking-widest" style={{ color: NEON }}>
-        💎 DEEP — PRO限定コンテンツ
+        <span className="inline-flex items-center gap-1.5">
+          <Icon name="diamond" size={16} />
+          DEEP — PRO限定コンテンツ
+        </span>
       </div>
       <p className="text-sm font-semibold text-white">より深い互換性情報を見る</p>
       <ul className="mt-3 space-y-1 text-xs text-slate-400 text-left max-w-xs mx-auto">
         <li>• ソフトver × OSバージョン互換性マトリクス</li>
         <li>• USB / ハブ / LANケーブル種別の注意点</li>
-        <li>• HID接続 vs PRO DJ LINK 詳細解説</li>
+        <li>• HID接続 vs DVS接続 詳細解説</li>
         <li>• 音質・フォーマット（WAV/FLAC/AAC）深堀り</li>
         <li>• Phase使用時の詳細設定ガイド</li>
       </ul>
@@ -423,7 +442,7 @@ export default function CheckFlow() {
               <h2 className="text-xl font-bold text-white sm:text-2xl">セットアップタイプを選択</h2>
               <p className="mt-2 text-sm text-slate-400">あなたのDJスタイルに合ったタイプを選んでください</p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid grid-cols-2 gap-3">
               {SETUP_TYPES.map((option) => (
                 <SetupTypeCard
                   key={option.id}

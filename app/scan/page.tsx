@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Icon } from "@/app/components/GearIcons";
 
 export default function ScanPage() {
   const [scanned, setScanned] = useState(false);
@@ -26,14 +27,16 @@ export default function ScanPage() {
         <div style={{ color: "#00c8f0", fontSize: 20, fontWeight: 800, letterSpacing: 2 }}>
           DJ GEAR SYNC
         </div>
-        <div style={{ color: "#4a6a85", fontSize: 13, marginTop: 4 }}>
-          📷 AIギアスキャン
+        <div style={{ color: "#4a6a85", fontSize: 13, marginTop: 4, display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Icon name="camera" size={16} />
+          AIギアスキャン
         </div>
       </div>
 
       <div style={{ margin: "0 16px 8px", backgroundColor: "#0d1a10", borderLeft: "3px solid #00e89a", borderRadius: 8, padding: "10px 14px" }}>
-        <span style={{ color: "#00e89a", fontSize: 12 }}>
-          💡 1機材ずつ映すと認識精度が上がります
+        <span style={{ color: "#00e89a", fontSize: 12, display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Icon name="idea" size={16} />
+          1機材ずつ映すと認識精度が上がります
         </span>
       </div>
 
@@ -47,8 +50,9 @@ export default function ScanPage() {
             機材を枠内に収めてください
           </div>
         </div>
-        <div style={{ position: "absolute", bottom: 12, color: "#4a6a85", fontSize: 11, textAlign: "center" }}>
-          📱 カメラ機能はアプリ版で利用できます
+        <div style={{ position: "absolute", bottom: 12, color: "#4a6a85", fontSize: 11, textAlign: "center", display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <Icon name="phone" size={14} />
+          カメラ機能はアプリ版で利用できます
         </div>
       </div>{scanned && result ? (
         <div style={{ backgroundColor: "#0d1117", margin: 16, borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 10 }}>

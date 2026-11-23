@@ -2,15 +2,16 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { Icon, type IconName } from "@/app/components/GearIcons";
 
 const NEON = "#00c8f0";
 const BG = "#07090f";
 
-const FEEDBACK_TYPES = [
-  { id: "good", icon: "😊", label: "良かった点" },
-  { id: "bug", icon: "🐛", label: "バグ報告" },
-  { id: "idea", icon: "💡", label: "改善提案" },
-  { id: "gear", icon: "🎵", label: "機材リクエスト" },
+const FEEDBACK_TYPES: { id: string; icon: IconName; label: string }[] = [
+  { id: "good", icon: "smile", label: "良かった点" },
+  { id: "bug", icon: "bug", label: "バグ報告" },
+  { id: "idea", icon: "idea", label: "改善提案" },
+  { id: "gear", icon: "music", label: "機材リクエスト" },
 ];
 
 export default function FeedbackButton() {
@@ -49,7 +50,7 @@ export default function FeedbackButton() {
         className="fixed bottom-20 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-all hover:opacity-90 sm:bottom-6"
         style={{ backgroundColor: NEON, color: BG, boxShadow: `0 0 20px ${NEON}50` }}
       >
-        💬
+        <Icon name="chat" size={24} />
       </button>
 
       {/* モーダル */}
@@ -58,7 +59,7 @@ export default function FeedbackButton() {
           <div className="w-full max-w-md rounded-t-2xl p-6 sm:rounded-2xl" style={{ backgroundColor: BG, border: "1px solid #1e293b" }}>
             {sent ? (
               <div className="flex flex-col items-center gap-3 py-8">
-                <span className="text-4xl">✅</span>
+                <span style={{ color: "#22c55e", display: "inline-flex" }}><Icon name="checkCircle" size={48} /></span>
                 <p className="text-sm font-medium text-white">フィードバックを送信しました！</p>
                 <p className="text-xs text-slate-400">ありがとうございます</p>
               </div>
@@ -66,7 +67,7 @@ export default function FeedbackButton() {
               <>
                 <div className="mb-5 flex items-center justify-between">
                   <h3 className="text-sm font-bold text-white">フィードバックを送る</h3>
-                  <button type="button" onClick={() => setOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+                  <button type="button" onClick={() => setOpen(false)} className="text-slate-400 hover:text-white"><Icon name="close" size={18} /></button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 mb-4">
@@ -82,7 +83,7 @@ export default function FeedbackButton() {
                         color: type === t.id ? NEON : "#94a3b8",
                       }}
                     >
-                      <span className="text-lg">{t.icon}</span>
+                      <Icon name={t.icon} size={22} />
                       <span>{t.label}</span>
                     </button>
                   ))}

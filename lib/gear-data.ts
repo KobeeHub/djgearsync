@@ -3,7 +3,7 @@
 // ============================================================
 
 // ─── カテゴリー型 ───────────────────────────────────────────
-export type SetupType = "dvs-cdj" | "dvs-turntable" | "controller" | "standalone";
+export type SetupType = "dvs-cdj" | "dvs-turntable" | "controller" | "allinone" | "standalone";
 
 export type GearCategory =
   | "setupType"
@@ -13,7 +13,9 @@ export type GearCategory =
   | "mixer"
   | "software"
   | "device"
-  | "controller" | "pc";
+  | "controller"
+  | "allinone"
+  | "pc";
 
 // ─── 基本型 ─────────────────────────────────────────────────
 export interface GearOption {
@@ -39,6 +41,7 @@ export interface MyGearSet {
   software?: string;
   device?: string;
   controller?: string;
+  allinone?: string;
   score: number;
 }
 
@@ -46,7 +49,8 @@ export interface MyGearSet {
 export const SETUP_TYPES: GearOption[] = [
   { id: "dvs-cdj",       name: "CDJ / マルチプレイヤー",           manufacturer: "" },
   { id: "dvs-turntable", name: "ターンテーブル",                    manufacturer: "" },
-  { id: "controller",    name: "DJコントローラー（オールインワン）", manufacturer: "" },
+  { id: "controller",    name: "DJコントローラー",                  manufacturer: "" },
+  { id: "allinone",      name: "スタンドアロン対応（PC不要）",       manufacturer: "" },
 ];
 
 // ─── CDJ / マルチプレイヤー ──────────────────────────────────
@@ -156,16 +160,11 @@ export const CONTROLLER_OPTIONS: GearOption[] = [
   { id: "ddj-400",      name: "DDJ-400",          manufacturer: "AlphaTheta (Pioneer DJ)" },
   { id: "ddj-200",      name: "DDJ-200",          manufacturer: "AlphaTheta (Pioneer DJ)" },
   // Denon DJ
-  { id: "prime4plus",   name: "Prime 4+",         manufacturer: "Denon DJ" },
-  { id: "prime2",       name: "Prime 2",          manufacturer: "Denon DJ" },
-  { id: "mcx8000",      name: "MCX8000",          manufacturer: "Denon DJ" },
-  { id: "sc-live4",     name: "SC LIVE 4",        manufacturer: "Denon DJ" },
   // Native Instruments
   { id: "traktor-s4mk3", name: "Traktor S4 MK3",  manufacturer: "Native Instruments" },
   { id: "traktor-s2mk3", name: "Traktor S2 MK3",  manufacturer: "Native Instruments" },
   { id: "traktor-s3",    name: "Traktor S3",       manufacturer: "Native Instruments" },
   // Numark
-  { id: "numark-mixstream", name: "Mixstream Pro+", manufacturer: "Numark" },
   { id: "numark-party2",   name: "Party Mix II",    manufacturer: "Numark" },
   // Hercules
   { id: "hercules-inpulse500", name: "Inpulse 500",    manufacturer: "Hercules" },
@@ -177,6 +176,26 @@ export const CONTROLLER_OPTIONS: GearOption[] = [
   { id: "roland-dj707m", name: "DJ-707M",         manufacturer: "Roland" },
 ];
 
+// ─── オールインワンDJシステム（PCなしで単体動作）──────────────
+export const ALLINONE_OPTIONS: GearOption[] = [
+  // AlphaTheta / Pioneer DJ
+  { id: "opus-quad",    name: "OPUS-QUAD",        manufacturer: "AlphaTheta (Pioneer DJ)" },
+  { id: "omnis-duo",    name: "OMNIS-DUO",        manufacturer: "AlphaTheta (Pioneer DJ)" },
+  { id: "xdj-az",       name: "XDJ-AZ",           manufacturer: "AlphaTheta (Pioneer DJ)" },
+  { id: "xdj-xz",       name: "XDJ-XZ",           manufacturer: "AlphaTheta (Pioneer DJ)" },
+  { id: "xdj-rx3",      name: "XDJ-RX3",          manufacturer: "AlphaTheta (Pioneer DJ)" },
+  { id: "xdj-rr",       name: "XDJ-RR",           manufacturer: "AlphaTheta (Pioneer DJ)" },
+  // Denon DJ
+  { id: "prime4plus",   name: "Prime 4+",         manufacturer: "Denon DJ" },
+  { id: "prime2",       name: "Prime 2",          manufacturer: "Denon DJ" },
+  { id: "sc-live4",     name: "SC LIVE 4",        manufacturer: "Denon DJ" },
+  { id: "mcx8000",      name: "MCX8000",          manufacturer: "Denon DJ" },
+  // Numark
+  { id: "numark-mixstream", name: "Mixstream Pro+", manufacturer: "Numark" },
+  // Rane
+  { id: "rane-performer", name: "Rane PERFORMER", manufacturer: "Rane" },
+];
+
 // ─── GEAR_OPTIONS（後方互換・ステップ参照用）────────────────
 export const GEAR_OPTIONS: Partial<Record<GearCategory, GearOption[]>> = {
   player:     PLAYER_OPTIONS,
@@ -186,6 +205,7 @@ export const GEAR_OPTIONS: Partial<Record<GearCategory, GearOption[]>> = {
   software:   SOFTWARE_OPTIONS,
   device:     DEVICE_OPTIONS,
   controller: CONTROLLER_OPTIONS,
+  allinone:   ALLINONE_OPTIONS,
 };
 
 // ─── ステップ定義（セットアップタイプ別）────────────────────
@@ -210,6 +230,12 @@ export const STEPS_CONTROLLER: { key: GearCategory; label: string }[] = [
   { key: "device",     label: "デバイス" },
 ];
 
+export const STEPS_ALLINONE: { key: GearCategory; label: string }[] = [
+  { key: "allinone", label: "オールインワン機" },
+  { key: "software", label: "DJソフト" },
+  { key: "device",   label: "デバイス" },
+];
+
 export const STEPS_STANDALONE: { key: GearCategory; label: string }[] = [
   { key: "player",  label: "CDJ/プレイヤー" },
   { key: "mixer",   label: "ミキサー" },
@@ -224,6 +250,7 @@ export function getSteps(setupType: SetupType): { key: GearCategory; label: stri
     case "dvs-cdj":        return STEPS_DVS_CDJ;
     case "dvs-turntable":  return STEPS_DVS_TURNTABLE;
     case "controller":     return STEPS_CONTROLLER;
+    case "allinone":       return STEPS_ALLINONE;
     default:               return STEPS_DVS_CDJ;
 
   }
@@ -237,7 +264,7 @@ export function getGearName(category: GearCategory, id: string): string {
   const all = [
     ...PLAYER_OPTIONS, ...TURNTABLE_OPTIONS, ...PHASE_OPTIONS,
     ...MIXER_OPTIONS, ...SOFTWARE_OPTIONS, ...DEVICE_OPTIONS,
-    ...CONTROLLER_OPTIONS,
+    ...CONTROLLER_OPTIONS, ...ALLINONE_OPTIONS,
   ];
   return all.find((g) => g.id === id)?.name ?? id;
 }
@@ -250,11 +277,46 @@ export function calculateCompatibility(
   const errors: CompatibilityError[] = [];
   let score = 100;
 
-  const { player, mixer, software, device, controller, phase } = selections;
+  const { player, mixer, software, device, controller, phase, allinone } = selections;
 
   // Pioneer CDJ + rekordbox = 最強スタック
   if (player?.startsWith("cdj-") && software === "rekordbox") {
     score = Math.min(score + 3, 100);
+  }
+
+  // オールインワン機 × ソフト
+  const pioneerAllinone = ["opus-quad", "omnis-duo", "xdj-az", "xdj-xz", "xdj-rx3", "xdj-rr"];
+  const otherAllinone = ["prime4plus", "prime2", "sc-live4", "mcx8000", "numark-mixstream", "rane-performer"];
+
+  if (allinone && pioneerAllinone.includes(allinone) && software === "rekordbox") {
+    score = Math.min(score + 3, 100);
+  }
+
+  if (allinone && pioneerAllinone.includes(allinone) && software === "engine-dj") {
+    errors.push({
+      type: "error",
+      title: "Engine DJ × AlphaTheta (Pioneer DJ) オールインワン",
+      description: "Engine DJはDenon DJ系の機材向けです。AlphaTheta (Pioneer DJ) のオールインワン機ではrekordboxを使用してください。",
+    });
+    score -= 30;
+  }
+
+  if (allinone && otherAllinone.includes(allinone) && software === "rekordbox") {
+    errors.push({
+      type: "warning",
+      title: "rekordbox × Denon DJ / Numark / Rane オールインワン",
+      description: "これらの機材は主にEngine OS / Engine DJでの利用を前提としています。rekordboxでは一部機能が使えない場合があります。",
+    });
+    score -= 15;
+  }
+
+  if (allinone && software === "traktor") {
+    errors.push({
+      type: "warning",
+      title: "Traktor × オールインワン機",
+      description: "Traktor Pro 3はオールインワン機との連携が限定的です。MIDIマッピングが必要な場合があります。",
+    });
+    score -= 12;
   }
 
   // Engine DJ × Pioneer プレイヤー

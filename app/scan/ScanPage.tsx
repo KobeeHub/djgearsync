@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useState } from "react";
+import { Icon } from "@/app/components/GearIcons";
 import {
   BG,
   FREE_DAILY_LIMIT,
@@ -351,10 +352,10 @@ function ConfirmedView({ gearName, onReset }: { gearName: string; onReset: () =>
   return (
     <div className="space-y-4 text-center">
       <div
-        className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-2xl"
-        style={{ backgroundColor: "#22c55e20", border: "2px solid #22c55e" }}
+        className="mx-auto flex h-16 w-16 items-center justify-center rounded-full"
+        style={{ backgroundColor: "#22c55e20", border: "2px solid #22c55e", color: "#22c55e" }}
       >
-        ✓
+        <Icon name="check" size={32} />
       </div>
       <h3 className="text-lg font-bold text-white">確定完了</h3>
       <p className="text-sm text-slate-400">

@@ -8,18 +8,36 @@ import {
   GLOBAL_RANKING,
   POST_TYPE_COLORS,
   POST_TYPE_LABELS,
-  RANK_ICONS,
   RANK_LABELS,
   countryFlag,
   type CommunityPost,
   type FilterTab,
   type PostType,
 } from "@/lib/community-data";
+import { Icon, type IconName } from "@/app/components/GearIcons";
 
 const NEON = "#00c8f0";
 const BG = "#07090f";
 
 const IS_PRO_USER = false;
+
+// ランクのアイコンと色(絵文字ではなく新デザインのアイコンで表示)
+const RANK_VISUALS: Record<string, { icon: IconName; color: string }> = {
+  bronze: { icon: "medal", color: "#cd7f32" },
+  silver: { icon: "medal", color: "#c0c8d4" },
+  gold: { icon: "medal", color: "#f0c030" },
+  pro: { icon: "star", color: "#f0c030" },
+  legend: { icon: "crown", color: "#ff6b35" },
+};
+
+function RankIcon({ rank, size = 16 }: { rank: string; size?: number }) {
+  const v = RANK_VISUALS[rank] ?? { icon: "medal" as IconName, color: "#94a3b8" };
+  return (
+    <span style={{ color: v.color, display: "inline-flex", verticalAlign: "middle" }}>
+      <Icon name={v.icon} size={size} />
+    </span>
+  );
+}
 
 function PostTypeBadge({ type }: { type: PostType }) {
   const color = POST_TYPE_COLORS[type];
@@ -43,7 +61,10 @@ function TranslatedBadge() {
       className="rounded px-2 py-0.5 text-[10px] font-medium"
       style={{ backgroundColor: "#1e293b", color: "#94a3b8" }}
     >
-      🌐 Translated by AI
+      <span className="inline-flex items-center gap-1">
+        <Icon name="globe" size={12} />
+        Translated by AI
+      </span>
     </span>
   );
 }
@@ -93,8 +114,9 @@ function PostCard({ post }: { post: CommunityPost }) {
       </div>
 
       {post.gearSet && (
-        <p className="mt-3 text-xs" style={{ color: NEON }}>
-          🔗 {post.gearSet}
+        <p className="mt-3 inline-flex items-center gap-1.5 text-xs" style={{ color: NEON }}>
+          <Icon name="link" size={14} />
+          {post.gearSet}
         </p>
       )}
 
@@ -103,12 +125,12 @@ function PostCard({ post }: { post: CommunityPost }) {
           <span className="text-sm font-medium text-white">{post.author}</span>
           <span className="text-sm">{countryFlag(post.countryCode)}</span>
           <span className="text-xs" title={RANK_LABELS[post.rank]}>
-            {RANK_ICONS[post.rank]}
+            <RankIcon rank={post.rank} size={16} />
           </span>
         </div>
         <div className="flex items-center gap-4 text-xs text-slate-500">
-          <span>♥ {post.likes}</span>
-          <span>💬 {post.comments}</span>
+          <span className="inline-flex items-center gap-1"><Icon name="heart" size={14} /> {post.likes}</span>
+          <span className="inline-flex items-center gap-1"><Icon name="chat" size={14} /> {post.comments}</span>
         </div>
       </div>
     </article>
@@ -148,8 +170,9 @@ function GlobalRanking() {
                   <span className="ml-2">{countryFlag(entry.countryCode)}</span>
                 </td>
                 <td className="px-4 py-3">
-                  <span title={RANK_LABELS[entry.rank]}>
-                    {RANK_ICONS[entry.rank]} {RANK_LABELS[entry.rank]}
+                  <span className="inline-flex items-center gap-1.5" title={RANK_LABELS[entry.rank]}>
+                    <RankIcon rank={entry.rank} size={16} />
+                    {RANK_LABELS[entry.rank]}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right font-medium text-white">
@@ -198,7 +221,7 @@ export default function CommunityPage() {
           className="flex items-center gap-3 rounded-lg p-3"
           style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}
         >
-          <span className="text-lg text-slate-500">✏️</span>
+          <span className="text-slate-500"><Icon name="pencil" size={20} /></span>
           <input
             type="text"
             value={postInput}
@@ -221,9 +244,9 @@ export default function CommunityPage() {
         </div>
 
         <div className="mt-4 flex items-center gap-2 rounded-lg px-3 py-2" style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
-          <span className="text-slate-500 text-sm">🔍</span>
+          <span className="text-slate-500"><Icon name="search" size={18} /></span>
           <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="機材名・投稿内容を検索..." className="flex-1 bg-transparent text-sm text-white placeholder:text-slate-500 outline-none" />
-          {searchQuery && (<button type="button" onClick={() => setSearchQuery("")} className="text-slate-500 hover:text-white text-xs">✕</button>)}
+          {searchQuery && (<button type="button" onClick={() => setSearchQuery("")} className="text-slate-500 hover:text-white"><Icon name="close" size={16} /></button>)}
         </div>
 
         <div className="mt-3 flex flex-wrap gap-2">

@@ -76,7 +76,7 @@ export function countryFlag(code: string): string {
   return code
     .toUpperCase()
     .split("")
-    .map((char) => String.fromCodePoint(0x1f1e5 + char.charCodeAt(0) - 65))
+    .map((char) => String.fromCodePoint(0x1f1e6 + char.charCodeAt(0) - 65))
     .join("");
 }
 

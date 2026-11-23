@@ -21,19 +21,62 @@ import {
 } from "@/lib/mygear-data";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { Icon, type IconName } from "@/app/components/GearIcons";
 const IS_PRO_USER = false;
 const FREE_LIMIT = 1;
 const PRO_LIMIT = 4;
+// データ側の絵文字を新デザインのアイコンに変換する(データファイルは変更不要)
+const EMOJI_ICONS: Record<string, IconName> = {
+  "🎧": "headphones",
+  "🎵": "music",
+  "🔊": "speaker",
+  "🎛": "controller",
+  "🏆": "trophy",
+  "👑": "crown",
+  "💡": "idea",
+  "🔧": "wrench",
+  "💘": "heart",
+  "🌐": "globe",
+  "📡": "broadcast",
+  "🎤": "mic",
+  "🔥": "flame",
+  "⭐": "star",
+  "🥇": "medal",
+  "🥈": "medal",
+  "🥉": "medal",
+};
+
+const DOT_COLORS: Record<string, string> = {
+  "🔴": "#ef4444",
+  "🟡": "#f59e0b",
+  "🟢": "#22c55e",
+};
+
+function EmojiIcon({ emoji, size = 20 }: { emoji: string; size?: number }) {
+  const key = emoji.replace(/\uFE0F/g, "");
+  const dotColor = DOT_COLORS[key];
+  if (dotColor) {
+    return (
+      <span style={{ color: dotColor, display: "inline-flex" }}>
+        <Icon name="dot" size={size} />
+      </span>
+    );
+  }
+  const name = EMOJI_ICONS[key];
+  if (!name) return <span>{emoji}</span>;
+  return <Icon name={name} size={size} />;
+}
+
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }, (_, i) => (
         <span
           key={i}
-          className="text-sm"
+          className="inline-flex"
           style={{ color: i < rating ? GOLD : "#334155" }}
         >
-          ★
+          <Icon name="star" size={14} />
         </span>
       ))}
     </div>
@@ -52,7 +95,7 @@ function CoverArea() {
         className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100"
         style={{ backgroundColor: "rgba(7, 9, 15, 0.5)" }}
       >
-        <span className="text-sm text-white">📷 カバー写真を変更</span>
+        <span className="inline-flex items-center gap-2 text-sm text-white"><Icon name="camera" size={18} />カバー写真を変更</span>
       </div>
     </div>
   );
@@ -119,7 +162,7 @@ function TierBadgeRow() {
                 filter: isEarned ? "none" : "grayscale(1)",
               }}
             >
-              {badge.icon}
+              <EmojiIcon emoji={badge.icon} size={22} />
             </div>
             <span
               className="text-[10px] sm:text-xs"
@@ -207,8 +250,11 @@ function AchievementGrid() {
             opacity: achievement.earned ? 1 : 0.5,
           }}
         >
-          <span className="text-2xl">
-            {achievement.earned ? achievement.icon : "🔒"}
+          <span
+            className="inline-flex"
+            style={{ color: achievement.earned ? GOLD : "#64748b" }}
+          >
+            {achievement.earned ? <EmojiIcon emoji={achievement.icon} size={28} /> : <Icon name="lock" size={28} />}
           </span>
           <span
             className="text-center text-[10px] leading-tight sm:text-xs"
@@ -286,7 +332,7 @@ function NotificationArea({ notifications, locked }: { notifications: ProNotific
               className="flex items-start gap-3 rounded-lg p-3"
               style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}
             >
-              <span className="text-sm">{NOTIFICATION_DOTS[notification.level]}</span>
+              <span className="mt-1 inline-flex"><EmojiIcon emoji={NOTIFICATION_DOTS[notification.level]} size={14} /></span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm text-slate-300">{notification.message}</p>
                 <p className="mt-1 text-xs text-slate-500">{notification.time}</p>
@@ -416,7 +462,7 @@ function StatsRow({ isProUser }: { isProUser: boolean }) {
           style={{ backgroundColor: "#0d1117", border: "1px solid #1e293b" }}>
           {stat.pro && !isProUser ? (
             <>
-              <span className="text-base font-bold" style={{ color: "#475569" }}>🔒</span>
+              <span className="inline-flex" style={{ color: "#475569" }}><Icon name="lock" size={20} /></span>
               <span className="mt-1 text-[10px]" style={{ color: "#475569" }}>{stat.label}</span>
               <span className="text-[9px] font-bold" style={{ color: GOLD }}>PRO</span>
             </>
@@ -559,7 +605,7 @@ function DMSection() {
           className="w-full rounded-full py-2 text-xs font-medium transition-all hover:opacity-80"
           style={{ border: `1px solid ${NEON}50`, color: NEON }}
         >
-          ✉️ 新しいメッセージを送る
+          <span className="inline-flex items-center justify-center gap-2"><Icon name="mail" size={16} />新しいメッセージを送る</span>
         </button>
       </div>
     </div>
@@ -710,7 +756,10 @@ export default function MyGearPage() {
                   border: `1px solid ${GOLD}50`,
                 }}
               >
-                🥇 {USER_PROFILE.rankLabel}
+                <span className="inline-flex items-center gap-1">
+                  <Icon name="medal" size={14} />
+                  {USER_PROFILE.rankLabel}
+                </span>
               </span>
               <span className="text-sm font-medium" style={{ color: NEON }}>
                 {USER_PROFILE.points.toLocaleString()} pt
@@ -734,7 +783,7 @@ export default function MyGearPage() {
               <button type="button" onClick={() => setShowCountryEditor(!showCountryEditor)}
                 className="text-[10px] px-2 py-0.5 rounded-full transition-all"
                 style={{ border: `1px solid ${NEON}50`, color: NEON }}>
-                ✏️ 編集
+                <span className="inline-flex items-center gap-1"><Icon name="pencil" size={12} />編集</span>
               </button>
             </div>
 
@@ -841,7 +890,7 @@ export default function MyGearPage() {
           </section>
 
           <section>
-            <SectionTitle>💬 ダイレクトメッセージ</SectionTitle>
+            <SectionTitle><span className="inline-flex items-center gap-2"><Icon name="chat" size={18} />ダイレクトメッセージ</span></SectionTitle>
             <DMSection />
           </section>
         </div>

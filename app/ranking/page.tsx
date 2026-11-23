@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { getTargetUrl, logGearClick } from "@/app/lib/gearClicks";
+import { Icon, type IconName } from "@/app/components/GearIcons";
 
 const NEON = "#00c8f0";
 const GOLD = "#f0a500";
@@ -65,13 +66,19 @@ async function handleGearClick(gear: GearRankItem) {
   }
 }
 
-const GEAR_CATEGORIES = [
-  { id: "すべて", label: "🎛️ すべて" },
-  { id: "プレイヤー", label: "💿 プレイヤー" },
-  { id: "ミキサー", label: "🎚️ ミキサー" },
-  { id: "ソフト", label: "💻 ソフト" },
-  { id: "コントローラー", label: "🕹️ コントローラー" },
+const GEAR_CATEGORIES: { id: string; label: string; icon: IconName }[] = [
+  { id: "すべて", label: "すべて", icon: "grid" },
+  { id: "プレイヤー", label: "プレイヤー", icon: "player" },
+  { id: "ミキサー", label: "ミキサー", icon: "mixer" },
+  { id: "ソフト", label: "ソフト", icon: "laptop" },
+  { id: "コントローラー", label: "コントローラー", icon: "controller" },
 ];
+
+const MEDAL_COLORS: Record<number, string> = {
+  1: "#f0c030",
+  2: "#c0c8d4",
+  3: "#cd7f32",
+};
 
 const TIER_COLORS: Record<string, string> = {
   Legend: "#ff6b35",
@@ -83,9 +90,13 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 function RankMedal({ rank }: { rank: number }) {
-  if (rank === 1) return <span style={{ fontSize: 20 }}>🥇</span>;
-  if (rank === 2) return <span style={{ fontSize: 20 }}>🥈</span>;
-  if (rank === 3) return <span style={{ fontSize: 20 }}>🥉</span>;
+  if (rank <= 3) {
+    return (
+      <span style={{ color: MEDAL_COLORS[rank], display: "inline-flex" }}>
+        <Icon name="medal" size={24} />
+      </span>
+    );
+  }
   return <span style={{ color: "#94a3b8", fontWeight: 700, fontSize: 14 }}>#{rank}</span>;
 }
 
@@ -113,8 +124,8 @@ function GearRankRow({ gear }: { gear: GearRankItem }) {
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
           <span style={{ color: "white", fontWeight: 700, fontSize: 15 }}>{gear.name}</span>
           {isClickable && (
-            <span style={{ fontSize: 12, opacity: 0.7 }} title="メーカー公式サイトへ">
-              🔗
+            <span style={{ color: NEON, display: "inline-flex", opacity: 0.8 }} title="メーカー公式サイトへ">
+              <Icon name="link" size={14} />
             </span>
           )}
           <span
@@ -192,13 +203,16 @@ export default function RankingPage() {
 
       <main style={{ maxWidth: 640, margin: "0 auto", padding: "24px 16px" }}>
         <div style={{ marginBottom: 24 }}>
-          <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, marginBottom: 4 }}>🏆 グローバルランキング</h1>
+          <h1 style={{ color: "white", fontSize: 22, fontWeight: 800, marginBottom: 4, display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ color: GOLD, display: "inline-flex" }}><Icon name="trophy" size={26} /></span>
+            グローバルランキング
+          </h1>
           <p style={{ color: "#94a3b8", fontSize: 13 }}>世界中のDJとギアのリアルタイム順位</p>
         </div>
 
         {/* メインタブ */}
         <div style={{ display: "flex", gap: 8, marginBottom: 24 }}>
-          {[{ id: "users", label: "👤 ユーザー" }, { id: "gear", label: "🎛️ ギア人気" }].map((tab) => (
+          {[{ id: "users", label: "ユーザー", icon: "user" as IconName }, { id: "gear", label: "ギア人気", icon: "controller" as IconName }].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as "users" | "gear")}
@@ -212,8 +226,12 @@ export default function RankingPage() {
                 fontWeight: 600,
                 fontSize: 13,
                 cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
               }}
             >
+              <Icon name={tab.icon} size={16} />
               {tab.label}
             </button>
           ))}
@@ -260,8 +278,12 @@ export default function RankingPage() {
                     fontWeight: 600,
                     fontSize: 12,
                     cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
                   }}
                 >
+                  <Icon name={cat.icon} size={15} />
                   {cat.label}
                 </button>
               ))}

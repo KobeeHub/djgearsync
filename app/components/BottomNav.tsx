@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Icon, type IconName } from "@/app/components/GearIcons";
 
-const navItems = [
-  { label: "ホーム", href: "/", emoji: "🏠" },
-  { label: "チェック", href: "/check", emoji: "🔍" },
-  { label: "コミュニティ", href: "/community", emoji: "👥" },
-  { label: "MY GEAR", href: "/mygear", emoji: "🎛" },
-  { label: "スキャン", href: "/scan", emoji: "📷" },
-  { label: "ランキング", href: "/ranking", emoji: "🏆" },
-  { label: "設定", href: "/settings", emoji: "⚙️" },
+const navItems: { label: string; href: string; icon: IconName }[] = [
+  { label: "ホーム", href: "/", icon: "home" },
+  { label: "チェック", href: "/check", icon: "search" },
+  { label: "コミュニティ", href: "/community", icon: "community" },
+  { label: "MY GEAR", href: "/mygear", icon: "controller" },
+  { label: "スキャン", href: "/scan", icon: "camera" },
+  { label: "ランキング", href: "/ranking", icon: "trophy" },
+  { label: "設定", href: "/settings", icon: "settings" },
 ];
 
 export default function BottomNav() {
@@ -47,7 +48,7 @@ export default function BottomNav() {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "2px",
+                gap: "4px",
                 textDecoration: "none",
                 color: isActive ? "#00c8f0" : "rgba(255,255,255,0.45)",
                 transition: "color 0.15s ease",
@@ -72,13 +73,13 @@ export default function BottomNav() {
               )}
               <span
                 style={{
-                  fontSize: "20px",
+                  display: "flex",
                   lineHeight: 1,
                   filter: isActive ? "drop-shadow(0 0 6px rgba(0,200,240,0.8))" : "none",
                   transition: "filter 0.15s ease",
                 }}
               >
-                {item.emoji}
+                <Icon name={item.icon} size={22} />
               </span>
               <span
                 style={{
