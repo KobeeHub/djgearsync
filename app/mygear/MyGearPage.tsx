@@ -155,6 +155,7 @@ function TierBadgeRow() {
             <div
               className="flex h-10 w-10 items-center justify-center rounded-full text-lg transition-all sm:h-12 sm:w-12 sm:text-xl"
               style={{
+                color: isEarned ? NEON : "#94a3b8",
                 backgroundColor: isEarned ? `${NEON}15` : "#1e293b",
                 border: `1px solid ${isEarned ? NEON : "#334155"}`,
                 boxShadow: isEarned ? `0 0 12px ${NEON}40` : "none",
