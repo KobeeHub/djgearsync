@@ -9,12 +9,11 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Check tables
+      - name: Ping Supabase
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          for t in audio_interfaces computers mixers turntables usb_accessories lan_accessories software community_posts comments likes gear_profile_posts my_gear_profiles gear_clicks rank_history translation_cache; do
-            code=$(curl -s -o /dev/null -w "%{http_code}" "$SUPABASE_URL/rest/v1/$t?select=*&limit=1" -H "apikey: $SUPABASE_ANON_KEY")
-            echo "$t $code"
-          done
+          curl -fsS -o /dev/null "$SUPABASE_URL/rest/v1/my_gear_profiles?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY"
+          echo "Supabase is alive"
