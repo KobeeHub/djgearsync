@@ -2,9 +2,15 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { Icon } from "@/app/components/GearIcons";
 
 const NEON = "#00c8f0";
 const BG = "#07090f";
+
+// ゲスト(デモ)アカウント。.env.local と Vercel の環境変数に設定します。
+// NEXT_PUBLIC_ はブラウザから見えるので、デモ専用の無害なアカウントにしてください。
+const DEMO_EMAIL = process.env.NEXT_PUBLIC_DEMO_EMAIL ?? "";
+const DEMO_PASSWORD = process.env.NEXT_PUBLIC_DEMO_PASSWORD ?? "";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -32,6 +38,25 @@ export default function LoginPage() {
       else window.location.href = "/mygear";
     }
     setLoading(false);
+  };
+
+  const handleGuestLogin = async () => {
+    if (!DEMO_EMAIL || !DEMO_PASSWORD) {
+      setMessage("ゲスト機能は現在準備中です。");
+      return;
+    }
+    setLoading(true);
+    setMessage("");
+    const { error } = await supabase.auth.signInWithPassword({
+      email: DEMO_EMAIL,
+      password: DEMO_PASSWORD,
+    });
+    if (error) {
+      setMessage("ゲストでのログインに失敗しました。時間をおいてもう一度お試しください。");
+      setLoading(false);
+      return;
+    }
+    window.location.href = "/mygear";
   };
 
   return (
@@ -79,16 +104,42 @@ export default function LoginPage() {
             {isSignUp ? "すでにアカウントをお持ちの方はこちら" : "アカウントをお持ちでない方はこちら"}
           </button>
           <div style={{ display: "flex", alignItems: "center", gap: "8px", margin: "8px 0" }}>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
-          <span style={{ color: "#8899aa", fontSize: "12px" }}>または</span>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
+            <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
+            <span style={{ color: "#8899aa", fontSize: "12px" }}>または</span>
+            <div style={{ flex: 1, height: "1px", backgroundColor: "#1e293b" }} />
+          </div>
+          <button
+            onClick={handleGoogleLogin}
+            style={{ padding: "12px", backgroundColor: "white", color: "#000", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "15px" }}
+          >
+            Googleでログイン
+          </button>
+
+          <button
+            onClick={handleGuestLogin}
+            disabled={loading}
+            style={{
+              padding: "12px",
+              backgroundColor: `${NEON}15`,
+              color: NEON,
+              fontWeight: 700,
+              borderRadius: "8px",
+              border: `1px solid ${NEON}`,
+              cursor: "pointer",
+              fontSize: "15px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
+          >
+            <Icon name="user" size={18} />
+            ゲストで試す
+          </button>
+          <div style={{ color: "#64748b", fontSize: "11px", textAlign: "center" }}>
+            登録不要・デモアカウントで機能を体験できます
+          </div>
         </div>
-        <button
-          onClick={handleGoogleLogin}
-          style={{ padding: "12px", backgroundColor: "white", color: "#000", fontWeight: 700, borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "15px" }}
-        >
-          Googleでログイン
-        </button></div>
       </div>
     </div>
   );
